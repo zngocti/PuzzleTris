@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Board : MonoBehaviour
 {
@@ -13,17 +14,30 @@ public class Board : MonoBehaviour
 
     public GameObject[,] backgroundTiles;
 
+    public Tilemap miFondo;
+    public Tile miTile;
+    public Vector2Int miPos;
+
     private void Awake()
     {
         _height += 10;
 
         //columns rows
+        /*
         for (int i = 0; i < _width; i++)
         {
             for (int c = 0; c < _height; c++)
             {
                 backgroundTiles[i,c] = Instantiate(_tilePrefab);
             }
+        }*/
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            miFondo.SetTile((Vector3Int)miPos, miTile);
         }
     }
 }
