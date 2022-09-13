@@ -39,5 +39,11 @@ public class Board : MonoBehaviour
         {
             miFondo.SetTile((Vector3Int)miPos, miTile);
         }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            miFondo.GetTile<MiTile>((Vector3Int)miPos).nombre();
+            Debug.Log("listo");
+        }
     }
 }
