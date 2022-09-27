@@ -10,17 +10,18 @@ public class Board : MonoBehaviour
     [SerializeField]
     private int _height = 20;
 
-    public GameObject _tilePrefab;
-
-    public GameObject[,] backgroundTiles;
-
     public Tilemap miFondo;
     public Tile miTile;
     public Vector2Int miPos;
 
     private void Awake()
     {
-        _height += 10;
+        Vector3 pos = new Vector3(_width / 2, _height / 2, 0);
+        transform.position += pos;
+        pos.z = -10;
+        Camera.main.transform.position = pos;
+
+        _height += 4;
 
         //columns rows
         /*
@@ -31,6 +32,11 @@ public class Board : MonoBehaviour
                 backgroundTiles[i,c] = Instantiate(_tilePrefab);
             }
         }*/
+    }
+
+    private void Start()
+    {
+
     }
 
     private void Update()
