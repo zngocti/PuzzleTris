@@ -10,7 +10,7 @@ public class Board : MonoBehaviour
     [SerializeField]
     private int _height = 20;
 
-    public Tilemap miFondo;
+    public Tilemap _tilemap;
     public Tile miTile;
     public Vector2Int miPos;
 
@@ -43,12 +43,12 @@ public class Board : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.S))
         {
-            miFondo.SetTile((Vector3Int)miPos, miTile);
+            _tilemap.SetTile((Vector3Int)miPos, miTile);
         }
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            miFondo.GetTile<MiTile>((Vector3Int)miPos).nombre();
+            _tilemap.GetTile<MiTile>((Vector3Int)miPos).nombre();
             Debug.Log("listo");
         }
     }

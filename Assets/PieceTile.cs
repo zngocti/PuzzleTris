@@ -21,7 +21,7 @@ public class PieceTile : Tile
         string path = EditorUtility.SaveFilePanelInProject("Save Piece Tile", "New Piece Tile", "Asset", "Save Piece Tile", "Assets");
         if (path == "") return;
 
-        AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<MiTile>(), path);
+        AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<PieceTile>(), path);
     }
 #endif
 

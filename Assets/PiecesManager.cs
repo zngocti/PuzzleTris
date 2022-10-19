@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PiecesManager : MonoBehaviour
 {
-    public PieceTile currentPiece;
+    private PieceTile currentPiece;
+    private PieceTile savedPiece;
 
     // Start is called before the first frame update
     void Start()
