@@ -331,7 +331,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _width: 10
   _height: 20
-  miFondo: {fileID: 554190859}
+  _tilemap: {fileID: 554190859}
   miTile: {fileID: 11400000, guid: 88cda6ad26dfd4e439a89427e6e24671, type: 2}
   miPos: {x: 0, y: 0}
 --- !u!1 &993064905
