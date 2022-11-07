@@ -53,18 +53,8 @@ public class Board : MonoBehaviour
                 Debug.Log("No hay tile para leer");
                 return;
             }
-            _tilemap.GetTile<MiTile>((Vector3Int)miPos).nombre();
-            Debug.Log("listo");
-        }
 
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            if (!_tilemap.HasTile((Vector3Int)miPos))
-            {
-                Debug.Log("No hay tile para mover");
-                return;
-            }
-            _tilemap.GetTile<MiTile>((Vector3Int)miPos).gameObject.transform.Translate(Vector3.up);
+            Debug.Log("listo");
         }
     }
 }
