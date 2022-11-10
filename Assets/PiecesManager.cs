@@ -2,10 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PiecesManager : MonoBehaviour
+public abstract class PiecesManager<T> : MonoBehaviour
 {
-   //private PieceTile currentPiece;
-    //private PieceTile savedPiece;
+    [SerializeField]
+    [Min(10)]
+    protected int _poolSize = 300;
+
+    protected Vector3Int[] _currentPiece;
+    protected Vector3Int[] _savedPiece;
+
+    protected List<T> _myPool;
+
+    protected Dictionary<Vector3Int, T> _piecesInBoard;
 
     // Start is called before the first frame update
     void Start()
@@ -18,4 +26,13 @@ public class PiecesManager : MonoBehaviour
     {
         
     }
+
+    protected abstract void GeneratePool();
+    protected abstract void GenerateRandomPieces();
+
+    protected abstract void MovePieceDown(Board board);
+    protected abstract void MovePieceSideways(Board board, bool moveToRight);
+    protected abstract void RotatePiece(Board board);
+    
+    protected abstract void CheckForMatch(Board board);
 }

@@ -14,13 +14,14 @@ public enum PieceType
 }
 
 [RequireComponent(typeof(Board))]
-[RequireComponent(typeof(PiecesManager))]
 public class Player : MonoBehaviour
 {
     [SerializeField]
     private string _name;
 
+    [SerializeField]
     private Board _board;
+    [SerializeField]
     private PiecesManager _piecesManager;
 
     public PieceType _pieceType;
@@ -28,7 +29,6 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         _board = GetComponent<Board>();
-        _piecesManager = GetComponent<PiecesManager>();
     }
 
     private void Start()
