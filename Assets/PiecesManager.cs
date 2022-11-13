@@ -15,6 +15,8 @@ public abstract class PiecesManager : MonoBehaviour
 
     protected Dictionary<Vector3Int, Piece> _piecesInBoard;
 
+    protected List<System.Enum> _nextPieces;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,7 +31,20 @@ public abstract class PiecesManager : MonoBehaviour
 
     protected abstract void GeneratePool();
     protected abstract void GenerateRandomPieces();
+    protected Piece GetAvailablePiece()
+    {
+        for (int i = 0; i < _myPool.Count; i++)
+        {
+            if (!_myPool[i].IsInUse)
+            {
+                return _myPool[i];
+            }
+        }
 
+        return null;
+    }
+
+    protected abstract bool CanMoveDown(Board board);
     protected abstract void MovePieceDown(Board board);
     protected abstract void MovePieceSideways(Board board, bool moveToRight);
     protected abstract void RotatePiece(Board board);

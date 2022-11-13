@@ -6,11 +6,17 @@ using UnityEngine.Tilemaps;
 public class Board : MonoBehaviour
 {
     [SerializeField]
+    [Min(6)]
     private int _width = 10;
     [SerializeField]
+    [Min(10)]
     private int _height = 20;
+    [SerializeField]
+    [Min(0)]
+    private int _extraHeight = 4;
 
-    public Tilemap _tilemap;
+    [SerializeField]
+    private Tilemap _tilemap;
     public Tile miTile;
     public Vector2Int miPos;
 
@@ -21,7 +27,7 @@ public class Board : MonoBehaviour
         pos.z = -10;
         Camera.main.transform.position = pos;
 
-        _height += 4;
+        _height += _extraHeight;
 
         //columns rows
         /*
@@ -56,5 +62,10 @@ public class Board : MonoBehaviour
 
             Debug.Log("listo");
         }
+    }
+
+    public bool IsOccupied(Vector3Int pos)
+    {
+        return _tilemap.HasTile(pos);
     }
 }
