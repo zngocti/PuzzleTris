@@ -13,14 +13,9 @@ public enum TetraType
     I
 }
 
-public class TetraPiece : MonoBehaviour, IPiece<TetraType>
+public class TetraPiece : Piece, IHasPieceType<TetraType>
 {
-    private bool _isPivot = false;
-    private bool _isCurrentPiece = false;
     private TetraType _myType = TetraType.J;
-
-    public bool IsPivot { get => _isPivot; }
-    public bool IsCurrentPiece { get => _isCurrentPiece; }
 
     public TetraType PieceType { get => _myType; }
 

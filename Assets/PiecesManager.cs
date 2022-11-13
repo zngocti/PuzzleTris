@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class PiecesManager<T> : MonoBehaviour
+public abstract class PiecesManager : MonoBehaviour
 {
     [SerializeField]
     [Min(10)]
@@ -11,9 +11,9 @@ public abstract class PiecesManager<T> : MonoBehaviour
     protected Vector3Int[] _currentPiece;
     protected Vector3Int[] _savedPiece;
 
-    protected List<T> _myPool;
+    protected List<Piece> _myPool;
 
-    protected Dictionary<Vector3Int, T> _piecesInBoard;
+    protected Dictionary<Vector3Int, Piece> _piecesInBoard;
 
     // Start is called before the first frame update
     void Start()

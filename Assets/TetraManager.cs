@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TetraManager : PiecesManager<TetraPiece>
+public class TetraManager : PiecesManager
 {
     protected override void GeneratePool()
     {
