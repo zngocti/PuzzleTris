@@ -331,9 +331,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _width: 10
   _height: 20
+  _extraHeight: 4
   _tilemap: {fileID: 554190859}
-  miTile: {fileID: 11400000, guid: 88cda6ad26dfd4e439a89427e6e24671, type: 2}
+  miTile: {fileID: 0}
   miPos: {x: 0, y: 0}
+  myArray:
+  - _pieceType: 0
+    _tile: {fileID: 0}
+  - _pieceType: 0
+    _tile: {fileID: 0}
+  - _pieceType: 0
+    _tile: {fileID: 0}
+  - _pieceType: 0
+    _tile: {fileID: 0}
+  - _pieceType: 0
+    _tile: {fileID: 0}
+  - _pieceType: 0
+    _tile: {fileID: 0}
+  - _pieceType: 0
+    _tile: {fileID: 0}
 --- !u!1 &993064905
 GameObject:
   m_ObjectHideFlags: 0

@@ -20,15 +20,26 @@ public class Board : MonoBehaviour
     public Tile miTile;
     public Vector2Int miPos;
 
+    [System.Serializable]
+    public struct NamedImage
+    {
+        [ReadOnly] public TetraType _pieceType;
+        public Tile _tile;
+    }
+
+    [SerializeField]
+    NamedImage[] myArray = new NamedImage[System.Enum.GetValues(typeof(TetraType)).Length];
+//    List<NamedImage> mylist = new List<NamedImage>(System.Enum.GetValues(typeof(TetraType)).Length);
+
     private void Awake()
     {
         Vector3 pos = new Vector3(_width / 2, _height / 2, 0);
         transform.position += pos;
         pos.z = -10;
         Camera.main.transform.position = pos;
-
+        
         _height += _extraHeight;
-
+        
         //columns rows
         /*
         for (int i = 0; i < _width; i++)
