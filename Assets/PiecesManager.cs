@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class PiecesManager : MonoBehaviour
+public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
 {
     [SerializeField]
     [Min(10)]
@@ -16,6 +16,17 @@ public abstract class PiecesManager : MonoBehaviour
     protected Dictionary<Vector3Int, Piece> _piecesInBoard;
 
     protected List<System.Enum> _nextPieces;
+
+    [System.Serializable]
+    public struct PieceInBag
+    {
+        public T _pieceType;
+        [Min(1)]
+        public int _quantityInASpawnBag;
+    }
+
+    [SerializeField]
+    PieceInBag[] myArray;
 
     // Start is called before the first frame update
     void Start()
