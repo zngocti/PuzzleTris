@@ -32,6 +32,8 @@ public static class Utilities
     }
 }
 
+//Read Only
+
 public class ReadOnlyAttribute : PropertyAttribute
 {
 
@@ -54,3 +56,106 @@ public class ReadOnlyDrawer : PropertyDrawer
         GUI.enabled = true;
     }
 }
+
+//Array 2D
+/*
+[System.Serializable]
+public class TileData
+{
+    [System.Serializable]
+    public struct rowData
+    {
+        public bool[] row;
+    }
+
+    public rowData[] rows = new rowData[5];
+}
+
+[CustomPropertyDrawer(typeof(TileData))]
+public class CustomTileData : PropertyDrawer
+{
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        EditorGUI.PrefixLabel(position, label);
+
+        Rect newPosition = position;
+        newPosition.y += 18f;
+        SerializedProperty rows = property.FindPropertyRelative("rows");
+
+        for (int i = 0; i < 5; i++)
+        {
+            SerializedProperty row = rows.GetArrayElementAtIndex(i).FindPropertyRelative("row");
+            newPosition.height = 20;
+
+            if (row.arraySize != 5)
+                row.arraySize = 5;
+
+            newPosition.width = 20;
+
+            for (int j = 0; j < 5; j++)
+            {
+                EditorGUI.PropertyField(newPosition, row.GetArrayElementAtIndex(j), GUIContent.none);
+                newPosition.x += newPosition.width;
+            }
+
+            newPosition.x = position.x;
+            newPosition.y += 20;
+        }
+    }
+
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    {
+        return 20 * 12;
+    }
+} */
+
+//
+
+[System.Serializable]
+public class ArrayLayout
+{
+
+    [System.Serializable]
+    public struct rowData
+    {
+        public bool[] row;
+    }
+
+    public rowData[] rows = new rowData[5]; //Grid of 5x5
+}
+
+[CustomPropertyDrawer(typeof(ArrayLayout))]
+public class CustPropertyDrawer : PropertyDrawer
+{
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        EditorGUI.PrefixLabel(position, label);
+        Rect newposition = position;
+        newposition.y += 18f;
+        SerializedProperty data = property.FindPropertyRelative("rows");
+        //data.rows[0][]
+        for (int j = 0; j < 5; j++)
+        {
+            SerializedProperty row = data.GetArrayElementAtIndex(j).FindPropertyRelative("row");
+            newposition.height = 18f;
+            if (row.arraySize != 5)
+                row.arraySize = 5;
+            newposition.width = 20;
+            for (int i = 0; i < 5; i++)
+            {
+                EditorGUI.PropertyField(newposition, row.GetArrayElementAtIndex(i), GUIContent.none);
+                newposition.x += newposition.width;
+            }
+
+            newposition.x = position.x;
+            newposition.y += 18f;
+        }
+    }
+
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    {
+        return 18f * 8;
+    }
+}
+
+//

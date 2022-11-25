@@ -20,6 +20,8 @@ public class Board : MonoBehaviour
     public Tile miTile;
     public Vector2Int miPos;
 
+    public ArrayLayout data;
+
     private void Awake()
     {
         Vector3 pos = new Vector3(_width / 2, _height / 2, 0);
@@ -42,7 +44,7 @@ public class Board : MonoBehaviour
 
     private void Start()
     {
-
+        Debug.Log(data.rows[0].row[0]);
     }
 
     private void Update()
