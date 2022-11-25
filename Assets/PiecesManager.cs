@@ -11,11 +11,11 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
     protected Vector3Int[] _currentPiece;
     protected Vector3Int[] _savedPiece;
 
-    protected List<Piece> _myPool;
+    protected List<T> _myPool;
 
-    protected Dictionary<Vector3Int, Piece> _piecesInBoard;
+    protected Dictionary<Vector3Int, T> _piecesInBoard;
 
-    protected List<System.Enum> _nextPieces;
+    protected List<T> _nextPieces;
 
     [System.Serializable]
     public struct PieceInBag
@@ -26,7 +26,7 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
     }
 
     [SerializeField]
-    PieceInBag[] myArray;
+    protected PieceInBag[] _possiblePieces;
 
     // Start is called before the first frame update
     void Start()
@@ -40,9 +40,36 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
         
     }
 
-    protected abstract void GeneratePool();
-    protected abstract void GenerateRandomPieces();
-    protected Piece GetAvailablePiece()
+    protected void GeneratePool()
+    {
+        if (_myPool.Count > 0)
+        {
+            return;
+        }
+
+        for (int i = 0; i < _poolSize; i++)
+        {
+            GameObject go = new GameObject();
+            _myPool.Add(go.AddComponent<T>());
+        }
+    }
+
+    protected void GenerateBagOfPieces()
+    {
+        _nextPieces.Clear();
+
+        for (int i = 0; i < _possiblePieces.Length; i++)
+        {
+            for (int c = 0; c < _possiblePieces[i]._quantityInASpawnBag; c++)
+            {
+                _nextPieces.Add(_possiblePieces[i]._pieceType);
+            }
+        }
+
+        Utilities.Shuffle<T>(_nextPieces);
+    }
+
+    protected T GetAvailablePiece()
     {
         for (int i = 0; i < _myPool.Count; i++)
         {

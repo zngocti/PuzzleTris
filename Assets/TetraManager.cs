@@ -4,42 +4,6 @@ using UnityEngine;
 
 public class TetraManager : PiecesManager<TetraPiece>
 {
-    protected override void GeneratePool()
-    {
-        if (_myPool.Count > 0)
-        {
-            return;
-        }
-
-        for (int i = 0; i < _poolSize; i++)
-        {
-            GameObject go = new GameObject();
-            _myPool.Add(go.AddComponent<TetraPiece>());
-        }
-    }
-
-    protected override void GenerateRandomPieces()
-    {
-        var posiblePieces = (TetraType[])System.Enum.GetValues(typeof(TetraType));
-
-        Utilities.Shuffle<TetraType>(posiblePieces);
-
-        for (int i = 0; i < posiblePieces.Length; i++)
-        {
-            /*
-            TetraPiece myPiece = (TetraPiece)GetAvailablePiece();
-            
-            if (myPiece == null)
-            {
-                Debug.LogError("No available piece found");
-                return;
-            }
-
-            myPiece.SetPiece(posiblePieces[i], true);*/
-            _nextPieces.Add(posiblePieces[i]);
-        }
-    }
-
     protected override bool CanMoveDown(Board board)
     {
         for (int i = 0; i < _currentPiece.Length; i++)
@@ -52,7 +16,7 @@ public class TetraManager : PiecesManager<TetraPiece>
                 return false;
             }
 
-            Piece value;
+            TetraPiece value;
 
             if (board.IsOccupied(pos) && _piecesInBoard.TryGetValue(pos, out value))
             {

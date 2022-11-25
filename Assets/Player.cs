@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     private Board _board;
     [SerializeField]
-    private PiecesManager _piecesManager;
+    private PiecesManager<Piece> _piecesManager;
 
     public PieceType _pieceType;
 
