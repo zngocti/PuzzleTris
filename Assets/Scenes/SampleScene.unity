@@ -333,15 +333,8 @@ MonoBehaviour:
   _height: 20
   _extraHeight: 4
   _tilemap: {fileID: 554190859}
-  miTile: {fileID: 0}
-  miPos: {x: 0, y: 0}
-  data:
-    rows:
-    - row: 0100000000
-    - row: 0000000000
-    - row: 0000000000
-    - row: 0000000000
-    - row: 0000000001
+  miTile: {fileID: 11400000, guid: 8155b94aa88294143a9da79a9d9edbc8, type: 2}
+  miPos: {x: 10, y: 0}
 --- !u!1 &993064905
 GameObject:
   m_ObjectHideFlags: 0
