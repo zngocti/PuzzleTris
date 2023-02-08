@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Direction
+{
+    Right,
+    Down,
+    Left
+}
+
 public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
 {
     [SerializeField]
@@ -82,9 +89,8 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
         return null;
     }
 
-    protected abstract bool CanMoveDown(Board board);
-    protected abstract void MovePieceDown(Board board);
-    protected abstract void MovePieceSideways(Board board, bool moveToRight);
+    protected abstract bool CanMoveTo(Board board, Direction direction);
+    protected abstract void MovePieceTo(Board board, Direction direction);
     protected abstract void RotatePiece(Board board);
     
     protected abstract void CheckForMatch(Board board);

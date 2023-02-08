@@ -20,6 +20,8 @@ public class Board : MonoBehaviour
     public Tile miTile;
     public Vector2Int miPos;
 
+    public int Width { get => _width; }
+
     private void Awake()
     {
         Vector3 pos = new Vector3(_width / 2, _height / 2, 0);
@@ -67,5 +69,33 @@ public class Board : MonoBehaviour
     public bool IsOccupied(Vector3Int pos)
     {
         return _tilemap.HasTile(pos);
+    }
+
+    public bool MoveTilesFromTo(Vector3Int[] fromPos, Vector3Int[] toPos)
+    {
+        if (fromPos.Length != toPos.Length)
+        {
+            return false;
+        }
+
+        Tile[] tilesToMove = new Tile[fromPos.Length];
+
+        for (int i = 0; i < fromPos.Length; i++)
+        {
+            if (!_tilemap.HasTile(fromPos[i]))
+            {
+                return false;
+            }
+
+            tilesToMove[i] = _tilemap.GetTile<Tile>(fromPos[i]);
+            _tilemap.SetTile(fromPos[i], null);
+        }
+
+        for (int i = 0; i < toPos.Length; i++)
+        {
+            _tilemap.SetTile(toPos[i], tilesToMove[i]);
+        }
+
+        return true;
     }
 }

@@ -4,16 +4,34 @@ using UnityEngine;
 
 public class TetraManager : PiecesManager<TetraPiece>
 {
-    protected override bool CanMoveDown(Board board)
+    protected override bool CanMoveTo(Board board, Direction direction)
     {
         for (int i = 0; i < _currentPiece.Length; i++)
         {
             var pos = _currentPiece[i];
-            pos.y--;
 
-            if (pos.y < 1)
+            switch (direction)
             {
-                return false;
+                case Direction.Right:
+                    if (pos.x + 1 >= board.Width)
+                    {
+                        return false;
+                    }
+                    break;
+                case Direction.Down:
+                    if (pos.y - 1 < 0)
+                    {
+                        return false;
+                    }
+                    break;
+                case Direction.Left:
+                    if (pos.x - 1 < 0)
+                    {
+                        return false;
+                    }
+                    break;
+                default:
+                    break;
             }
 
             TetraPiece value;
@@ -30,19 +48,34 @@ public class TetraManager : PiecesManager<TetraPiece>
         return true;
     }
 
-    protected override void MovePieceDown(Board board)
+    protected override void MovePieceTo(Board board, Direction direction)
     {
-        if (CanMoveDown(board))
+        if (CanMoveTo(board, direction))
         {
-            //mover pieza abajo
+            Vector3Int[] posToMove = new Vector3Int[_currentPiece.Length];
+
+            switch (direction)
+            {
+                case Direction.Right:
+                    //mover current piece?
+                    break;
+                case Direction.Down:
+                    break;
+                case Direction.Left:
+                    break;
+                default:
+                    break;
+            }
+            //mover pieza en direcion en el board
+            //board.MoveTilesFromTo()
+            //mover la pieza en piecesinboard aca
+            //y hacer return
         }
 
-        //detener pieza y cambiar a la siguiente
-    }
-
-    protected override void MovePieceSideways(Board board, bool moveToRight)
-    {
-        throw new System.NotImplementedException();
+        if (direction == Direction.Down)
+        {
+            //detener pieza y cambiar a la siguiente
+        }
     }
 
     protected override void RotatePiece(Board board)
