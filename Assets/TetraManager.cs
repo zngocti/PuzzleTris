@@ -57,24 +57,48 @@ public class TetraManager : PiecesManager<TetraPiece>
             switch (direction)
             {
                 case Direction.Right:
-                    //mover current piece?
+                    for (int i = 0; i < posToMove.Length; i++)
+                    {
+                        posToMove[i].x++;
+                    }
                     break;
                 case Direction.Down:
+                    for (int i = 0; i < posToMove.Length; i++)
+                    {
+                        posToMove[i].y--;
+                    }
                     break;
                 case Direction.Left:
+                    for (int i = 0; i < posToMove.Length; i++)
+                    {
+                        posToMove[i].x--;
+                    }
                     break;
                 default:
                     break;
             }
-            //mover pieza en direcion en el board
-            //board.MoveTilesFromTo()
-            //mover la pieza en piecesinboard aca
-            //y hacer return
+
+            TetraPiece[] tempPieces = new TetraPiece[_currentPiece.Length];
+
+            for (int i = 0; i < _currentPiece.Length; i++)
+            {
+                tempPieces[i] = _piecesInBoard[_currentPiece[i]];
+                _piecesInBoard.Remove(_currentPiece[i]);
+            }
+
+            for (int i = 0; i < posToMove.Length; i++)
+            {
+                _piecesInBoard.Add(posToMove[i], tempPieces[i]);
+            }
+
+            board.MoveTilesFromTo(_currentPiece, posToMove);
+
+            return;
         }
 
         if (direction == Direction.Down)
         {
-            //detener pieza y cambiar a la siguiente
+            //cambiar a la siguiente pieza
         }
     }
 
