@@ -102,7 +102,31 @@ public class TetraManager : PiecesManager<TetraPiece>
         }
     }
 
-    protected override void RotatePiece(Board board)
+    protected override bool CanRotatePiece(Board board, Direction direction = Direction.Right)
+    {
+        Vector3Int myPivot = new Vector3Int();
+
+        for (int i = 0; i < _currentPiece.Length; i++)
+        {
+            if (_piecesInBoard[_currentPiece[i]].IsPivot)
+            {
+                myPivot = _currentPiece[i];
+                break;
+            }
+        }
+
+        for (int i = 0; i < _currentPiece.Length; i++)
+        {
+            if (true)
+            {
+
+            }
+        }
+
+        return true;
+    }
+
+    protected override void RotatePiece(Board board, Direction direction = Direction.Right)
     {
         throw new System.NotImplementedException();
     }

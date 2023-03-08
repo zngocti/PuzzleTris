@@ -91,7 +91,7 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
 
     protected abstract bool CanMoveTo(Board board, Direction direction);
     protected abstract void MovePieceTo(Board board, Direction direction);
-    protected abstract void RotatePiece(Board board);
-    
+    protected abstract bool CanRotatePiece(Board board, Direction direction);
+    protected abstract void RotatePiece(Board board, Direction direction);
     protected abstract void CheckForMatch(Board board);
 }
