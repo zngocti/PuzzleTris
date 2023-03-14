@@ -115,11 +115,31 @@ public class TetraManager : PiecesManager<TetraPiece>
             }
         }
 
+        Vector3Int pos = new Vector3Int();
+        TetraPiece value;
+
         for (int i = 0; i < _currentPiece.Length; i++)
         {
-            if (true)
+            switch (direction)
             {
+                case Direction.Right:
+                    pos.x = _currentPiece[i].y - myPivot.y + myPivot.x;
+                    pos.y = -(_currentPiece[i].x - myPivot.x) + myPivot.y;
+                    break;
+                case Direction.Left:
+                    pos.x = -(_currentPiece[i].y - myPivot.y) + myPivot.x;
+                    pos.y = _currentPiece[i].x - myPivot.x + myPivot.y;
+                    break;
+                default:
+                    break;
+            }
 
+            if (board.IsOccupied(pos) && _piecesInBoard.TryGetValue(pos, out value))
+            {
+                if (!value.IsCurrentPiece)
+                {
+                    return false;
+                }
             }
         }
 
@@ -128,7 +148,55 @@ public class TetraManager : PiecesManager<TetraPiece>
 
     protected override void RotatePiece(Board board, Direction direction = Direction.Right)
     {
-        throw new System.NotImplementedException();
+        if (!CanRotatePiece(board, direction))
+        {
+            return;
+        }
+
+        Vector3Int myPivot = new Vector3Int();
+
+        for (int i = 0; i < _currentPiece.Length; i++)
+        {
+            if (_piecesInBoard[_currentPiece[i]].IsPivot)
+            {
+                myPivot = _currentPiece[i];
+                break;
+            }
+        }
+
+        Vector3Int[] posToMove = new Vector3Int[_currentPiece.Length];
+
+        for (int i = 0; i < _currentPiece.Length; i++)
+        {
+            switch (direction)
+            {
+                case Direction.Right:
+                    posToMove[i].x = _currentPiece[i].y - myPivot.y + myPivot.x;
+                    posToMove[i].y = -(_currentPiece[i].x - myPivot.x) + myPivot.y;
+                    break;
+                case Direction.Left:
+                    posToMove[i].x = -(_currentPiece[i].y - myPivot.y) + myPivot.x;
+                    posToMove[i].y = _currentPiece[i].x - myPivot.x + myPivot.y;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        TetraPiece[] tempPieces = new TetraPiece[_currentPiece.Length];
+
+        for (int i = 0; i < _currentPiece.Length; i++)
+        {
+            tempPieces[i] = _piecesInBoard[_currentPiece[i]];
+            _piecesInBoard.Remove(_currentPiece[i]);
+        }
+
+        for (int i = 0; i < posToMove.Length; i++)
+        {
+            _piecesInBoard.Add(posToMove[i], tempPieces[i]);
+        }
+
+        board.MoveTilesFromTo(_currentPiece, posToMove);
     }
 
     protected override void CheckForMatch(Board board)
