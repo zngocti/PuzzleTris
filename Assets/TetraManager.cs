@@ -5,8 +5,79 @@ using System;
 
 public class TetraManager : PiecesManager<TetraPiece>
 {
+    protected override bool UpdateCurrentPiece(Vector3Int[] newCurrentPiece)
+    {
+        if (_currentPiece.Length != newCurrentPiece.Length)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < _currentPiece.Length; i++)
+        {
+            _currentPiece[i] = newCurrentPiece[i];
+        }
+
+        return true;
+    }
+
+    protected override bool CanMoveFromTo(Board board, Vector3Int[] fromPos, Vector3Int[] toPos)
+    {
+        if (fromPos.Length != toPos.Length)
+        {
+            return false;
+        }
+
+        TetraPiece value;
+
+        for (int i = 0; i < toPos.Length; i++)
+        {
+            if (toPos[i].x < 0 || toPos[i].x > board.Width || toPos[i].y < 0)
+            {
+                return false;
+            }
+
+            if (board.IsOccupied(toPos[i]) && _piecesInBoard.TryGetValue(toPos[i], out value))
+            {
+                if (!value.IsCurrentPiece)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    protected override bool MoveFromTo(Board board, Vector3Int[] fromPos, Vector3Int[] toPos)
+    {
+        if (!CanMoveFromTo(board, fromPos, toPos))
+        {
+            return false;
+        }
+
+        TetraPiece[] tempPieces = new TetraPiece[_currentPiece.Length];
+
+        for (int i = 0; i < _currentPiece.Length; i++)
+        {
+            tempPieces[i] = _piecesInBoard[_currentPiece[i]];
+            _piecesInBoard.Remove(_currentPiece[i]);
+        }
+
+        for (int i = 0; i < toPos.Length; i++)
+        {
+            _piecesInBoard.Add(toPos[i], tempPieces[i]);
+        }
+
+        board.MoveTilesFromTo(_currentPiece, toPos);
+
+        UpdateCurrentPiece(toPos);
+
+        return true;
+    }
+
     protected override bool CanMoveTo(Board board, Direction direction)
     {
+        //eliminar metodo
         for (int i = 0; i < _currentPiece.Length; i++)
         {
             var pos = _currentPiece[i];
