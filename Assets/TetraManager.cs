@@ -55,12 +55,12 @@ public class TetraManager : PiecesManager<TetraPiece>
             return false;
         }
 
-        TetraPiece[] tempPieces = new TetraPiece[_currentPiece.Length];
+        TetraPiece[] tempPieces = new TetraPiece[fromPos.Length];
 
-        for (int i = 0; i < _currentPiece.Length; i++)
+        for (int i = 0; i < fromPos.Length; i++)
         {
-            tempPieces[i] = _piecesInBoard[_currentPiece[i]];
-            _piecesInBoard.Remove(_currentPiece[i]);
+            tempPieces[i] = _piecesInBoard[fromPos[i]];
+            _piecesInBoard.Remove(fromPos[i]);
         }
 
         for (int i = 0; i < toPos.Length; i++)
@@ -68,7 +68,17 @@ public class TetraManager : PiecesManager<TetraPiece>
             _piecesInBoard.Add(toPos[i], tempPieces[i]);
         }
 
-        board.MoveTilesFromTo(_currentPiece, toPos);
+        board.MoveTilesFromTo(fromPos, toPos);
+
+        return true;
+    }
+
+    protected override bool MoveCurrentPieceTo(Board board, Vector3Int[] toPos)
+    {
+        if (!MoveFromTo(board, _currentPiece, toPos))
+        {
+            return false;
+        }
 
         UpdateCurrentPiece(toPos);
 
@@ -122,6 +132,19 @@ public class TetraManager : PiecesManager<TetraPiece>
 
     protected override void MovePieceTo(Board board, Direction direction)
     {
+        switch (direction)
+        {
+            case Direction.Right:
+
+                break;
+            case Direction.Down:
+                break;
+            case Direction.Left:
+                break;
+            default:
+                break;
+        }
+        //remover este metodo o cambiarlo
         if (CanMoveTo(board, direction))
         {
             Vector3Int[] posToMove = new Vector3Int[_currentPiece.Length];
