@@ -270,75 +270,10 @@ public class TetraManager : PiecesManager<TetraPiece>
             return true;
         }
 
-        //si no es posible reviso si es una pieza larga
-        bool isLong = IsPieceLong(_currentPiece);
-
         //hacer calculos de rotacion para piezas largas y cortas
         //considerar que las piezas largas pueden quedar hasta con dos tiles de problema seguidos
 
         return true;
-    }
-
-    private bool IsPieceLong(Vector3Int[] pieceDir)
-    {
-        //cantidad de partes que seguidas hacen que la pieza sea considerada larga, en este caso 4 o mas
-        int piecesToBeLong = 4;
-
-        int[] arrX = new int[pieceDir.Length];
-        int[] arrY = new int[pieceDir.Length];
-
-        for (int i = 0; i < pieceDir.Length; i++)
-        {
-            arrX[i] = pieceDir[i].x;
-            arrY[i] = pieceDir[i].y;
-        }
-
-        Array.Sort(arrY);
-        Array.Sort(arrX);
-
-        int numX = 1;
-        int numY = 1;
-
-        int lastX = 0;
-        int lastY = 0;
-
-        for (int i = 1; i < pieceDir.Length; i++)
-        {
-            if (pieceDir[i].x == pieceDir[i - 1].x)
-            {
-                numX++;
-            }
-            else
-            {
-                if (numX > lastX)
-                {
-                    lastX = numX;
-                }
-
-                numX = 1;
-            }
-
-            if (pieceDir[i].y == pieceDir[i - 1].y)
-            {
-                numY++;
-            }
-            else
-            {
-                if (numY > lastY)
-                {
-                    lastY = numY;
-                }
-
-                numY = 1;
-            }
-        }
-
-        if (numX >= piecesToBeLong || lastX >= piecesToBeLong || numY >= piecesToBeLong || lastY >= piecesToBeLong)
-        {
-            return true;
-        }
-
-        return false;
     }
 
     protected override void CheckForMatch(Board board)
