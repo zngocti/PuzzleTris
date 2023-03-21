@@ -165,61 +165,6 @@ public class TetraManager : PiecesManager<TetraPiece>
         return MoveCurrentPieceTo(board, newPos);
     }
 
-    protected override bool CanRotatePiece(Board board, Direction direction = Direction.Right)
-    {
-        Vector3Int myPivot = new Vector3Int();
-
-        for (int i = 0; i < _currentPiece.Length; i++)
-        {
-            if (_piecesInBoard[_currentPiece[i]].IsPivot)
-            {
-                myPivot = _currentPiece[i];
-                break;
-            }
-
-            if (i == _currentPiece.Length - 1)
-            {
-                //no hay pivote, es una pieza cuadrada por lo que no hay que rotar
-                return false;
-            }
-        }
-
-        Vector3Int pos = new Vector3Int();
-        TetraPiece value;
-
-        for (int i = 0; i < _currentPiece.Length; i++)
-        {
-            switch (direction)
-            {
-                case Direction.Right:
-                    pos.x = _currentPiece[i].y - myPivot.y + myPivot.x;
-                    pos.y = -(_currentPiece[i].x - myPivot.x) + myPivot.y;
-                    break;
-                case Direction.Left:
-                    pos.x = -(_currentPiece[i].y - myPivot.y) + myPivot.x;
-                    pos.y = _currentPiece[i].x - myPivot.x + myPivot.y;
-                    break;
-                default:
-                    break;
-            }
-
-            if (pos.x < 0 || pos.x > board.Width || pos.y < 0)
-            {
-                return false;
-            }
-
-            if (board.IsOccupied(pos) && _piecesInBoard.TryGetValue(pos, out value))
-            {
-                if (!value.IsCurrentPiece)
-                {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
     protected override bool RotatePiece(Board board, Direction direction = Direction.Right)
     {
         if (direction != Direction.Right && direction != Direction.Left)

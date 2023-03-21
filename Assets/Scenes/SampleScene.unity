@@ -456,15 +456,15 @@ MonoBehaviour:
     - row: 0000000000
     - row: 0000000000
     - row: 0000000000
-  _positions:
-  - _theOffsetClock: []
-    _theOffsetCounterClock: []
-  - _theOffsetClock: []
-    _theOffsetCounterClock: []
-  - _theOffsetClock: []
-    _theOffsetCounterClock: []
-  - _theOffsetClock: []
-    _theOffsetCounterClock: []
+  _positionsToTry:
+  - _clockwiseAttempts: []
+    _counterclockwiseAttempts: []
+  - _clockwiseAttempts: []
+    _counterclockwiseAttempts: []
+  - _clockwiseAttempts: []
+    _counterclockwiseAttempts: []
+  - _clockwiseAttempts: []
+    _counterclockwiseAttempts: []
 --- !u!4 &2147256376
 Transform:
   m_ObjectHideFlags: 0

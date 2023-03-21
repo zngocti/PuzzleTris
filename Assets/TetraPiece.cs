@@ -7,12 +7,12 @@ public class TetraPiece : Piece
     private int _currentPosition = 0;
 
     [System.Serializable]
-    public struct Offsets
+    public struct PossiblePositions
     {
-        public Vector3Int[] _theOffsetClock;
-        public Vector3Int[] _theOffsetCounterClock;
+        public Vector3Int[] _clockwiseAttempts;
+        public Vector3Int[] _counterclockwiseAttempts;
     }
 
     [SerializeField]
-    private Offsets[] _positions;
+    private PossiblePositions[] _positionsToTry = new PossiblePositions[4];
 }
