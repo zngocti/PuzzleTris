@@ -209,7 +209,9 @@ public class TetraManager : PiecesManager<TetraPiece>
             }
         }
 
-        if (_piecesInBoard[myPivot].PositionsToTry)
+        //revisar desde aca para agregar el offset
+
+        if (_piecesInBoard[myPivot].PositionsToTryInDirection(direction).Length > 0)
         {
 
         }
