@@ -209,6 +209,11 @@ public class TetraManager : PiecesManager<TetraPiece>
             }
         }
 
+        if (_piecesInBoard[myPivot].PositionsToTry)
+        {
+
+        }
+
         //si la rotacion es posible se efectua
         if (MoveCurrentPieceTo(board, posToMove))
         {
