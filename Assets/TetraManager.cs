@@ -209,23 +209,50 @@ public class TetraManager : PiecesManager<TetraPiece>
             }
         }
 
-        //revisar desde aca para agregar el offset
-
-        if (_piecesInBoard[myPivot].PositionsToTryInDirection(direction).Length > 0)
-        {
-
-        }
-
-        //si la rotacion es posible se efectua
+        //intento rotarla con la rotacion normal
         if (MoveCurrentPieceTo(board, posToMove))
         {
             return true;
         }
 
-        //hacer calculos de rotacion para piezas largas y cortas
-        //considerar que las piezas largas pueden quedar hasta con dos tiles de problema seguidos
+        //obtengo el array con los offset desde el pivote
+        Vector3Int[] offsetPositons = _piecesInBoard[myPivot].PositionsToTryInDirection(direction);
 
-        return true;
+        if (offsetPositons == null)
+        {
+            return false;
+        }
+
+        if (offsetPositons.Length == 0)
+        {
+            return false;
+        }
+
+        //intento rotarlo con los diferentes offsets aplicados
+        for (int i = 0; i < offsetPositons.Length; i++)
+        {
+            //aplico un offset
+            for (int c = 0; c < posToMove.Length; c++)
+            {
+                posToMove[c].x += offsetPositons[i].x;
+                posToMove[c].y += offsetPositons[i].y;
+            }
+
+            //intento hacer la rotacion
+            if (MoveCurrentPieceTo(board, posToMove))
+            {
+                return true;
+            }
+
+            //remuevo el offset
+            for (int c = 0; c < posToMove.Length; c++)
+            {
+                posToMove[c].x -= offsetPositons[i].x;
+                posToMove[c].y -= offsetPositons[i].y;
+            }
+        }
+
+        return false;
     }
 
     protected override void CheckForMatch(Board board)
