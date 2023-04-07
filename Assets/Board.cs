@@ -11,16 +11,29 @@ public class Board : MonoBehaviour
     [SerializeField]
     [Min(10)]
     private int _height = 20;
-    [SerializeField]
-    [Min(0)]
-    private int _extraHeight = 4;
+//    [SerializeField]
+//    [Min(0)]
+//    private int _extraHeight = 4;
 
     [SerializeField]
     private Tilemap _tilemap;
     public Tile miTile;
     public Vector2Int miPos;
 
+    [SerializeField]
+    Vector3Int[] _previewPositions;
+
+    [SerializeField]
+    Vector3Int _startPosition;
+
+    [SerializeField]
+    Vector3Int _heldPiecePosition;
+
     public int Width { get => _width; }
+
+    public Vector3Int[] PreviewPositions { get => _previewPositions; }
+    public Vector3Int StartPosition { get => _startPosition; }
+    public Vector3Int HeldPiecePosition { get => _heldPiecePosition; }
 
     private void Awake()
     {
@@ -29,7 +42,7 @@ public class Board : MonoBehaviour
         pos.z = -10;
         Camera.main.transform.position = pos;
         
-        _height += _extraHeight;
+        //_height += _extraHeight;
         
         //columns rows
         /*
@@ -97,5 +110,10 @@ public class Board : MonoBehaviour
         }
 
         return true;
+    }
+
+    public void SetTile(Vector3Int pos, Tile tile)
+    {
+        _tilemap.SetTile(pos, tile);
     }
 }

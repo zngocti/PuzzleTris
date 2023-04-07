@@ -33,7 +33,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-            
+        _piecesManager.SetPreviewPositions(_board);
     }
 
     // Update is called once per frame

@@ -168,6 +168,54 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &241966911
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 241966913}
+  - component: {fileID: 241966912}
+  m_Layer: 0
+  m_Name: GameObject (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &241966912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 241966911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88a18750a6705184d84dd300a5e9c24b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _poolSize: 300
+  _possiblePieces:
+  - _pieceType: {fileID: 0}
+    _amountInBag: 0
+--- !u!4 &241966913
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 241966911}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.27688298, y: 0.062817246, z: 0.07771378}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &554190856
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,10 +379,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _width: 10
   _height: 20
-  _extraHeight: 4
   _tilemap: {fileID: 554190859}
   miTile: {fileID: 11400000, guid: 8155b94aa88294143a9da79a9d9edbc8, type: 2}
   miPos: {x: 10, y: 0}
+  _previewPositions: []
+  _startPosition: {x: 0, y: 0, z: 0}
+  _heldPiecePosition: {x: 0, y: 0, z: 0}
 --- !u!1 &993064905
 GameObject:
   m_ObjectHideFlags: 0
@@ -450,6 +500,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tile: {fileID: 0}
   _form:
+    rows:
+    - row: 0000000000
+    - row: 0000000000
+    - row: 0000000000
+    - row: 0000000000
+    - row: 0000000000
+  _pivotLocation:
     rows:
     - row: 0000000000
     - row: 0000000000

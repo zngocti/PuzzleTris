@@ -5,21 +5,6 @@ using System;
 
 public class TetraManager : PiecesManager<TetraPiece>
 {
-    protected override bool UpdateCurrentPiece(Vector3Int[] newCurrentPiece)
-    {
-        if (_currentPiece.Length != newCurrentPiece.Length)
-        {
-            return false;
-        }
-
-        for (int i = 0; i < _currentPiece.Length; i++)
-        {
-            _currentPiece[i] = newCurrentPiece[i];
-        }
-
-        return true;
-    }
-
     protected override bool CanMoveFromTo(Board board, Vector3Int[] fromPos, Vector3Int[] toPos)
     {
         if (fromPos.Length != toPos.Length)
@@ -73,7 +58,7 @@ public class TetraManager : PiecesManager<TetraPiece>
         return true;
     }
 
-    protected override bool MoveCurrentPieceTo(Board board, Vector3Int[] toPos)
+    protected override bool MoveUpdateCurrentPieceTo(Board board, Vector3Int[] toPos)
     {
         if (!MoveFromTo(board, _currentPiece, toPos))
         {
@@ -162,7 +147,7 @@ public class TetraManager : PiecesManager<TetraPiece>
                 break;
         }
 
-        return MoveCurrentPieceTo(board, newPos);
+        return MoveUpdateCurrentPieceTo(board, newPos);
     }
 
     protected override bool RotatePiece(Board board, Direction direction = Direction.Right)
@@ -185,6 +170,7 @@ public class TetraManager : PiecesManager<TetraPiece>
             if (i == _currentPiece.Length - 1)
             {
                 //no hay pivote, es una pieza cuadrada por lo que no hay que hacer nada para que se considere rotada
+                //tengo que cambiar un poco esto, las piezas cuadradas tienen que tener pivote para ser ubicadas
                 return true;
             }
         }
@@ -210,7 +196,7 @@ public class TetraManager : PiecesManager<TetraPiece>
         }
 
         //intento rotarla con la rotacion normal
-        if (MoveCurrentPieceTo(board, posToMove))
+        if (MoveUpdateCurrentPieceTo(board, posToMove))
         {
             return true;
         }
@@ -239,7 +225,7 @@ public class TetraManager : PiecesManager<TetraPiece>
             }
 
             //intento hacer la rotacion
-            if (MoveCurrentPieceTo(board, posToMove))
+            if (MoveUpdateCurrentPieceTo(board, posToMove))
             {
                 return true;
             }
@@ -261,9 +247,9 @@ public class TetraManager : PiecesManager<TetraPiece>
     }
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-        
+        base.Start();
     }
 
     // Update is called once per frame
