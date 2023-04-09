@@ -21,6 +21,9 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private Board _board;
+    ///https://forum.unity.com/threads/put-instance-of-generic-class-in-inspector.1405954/
+    [SerializeField]
+    public PiecesManager set;
     [SerializeField]
     private PiecesManager<Piece> _piecesManager;
 
@@ -28,7 +31,10 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        _board = GetComponent<Board>();
+        if (_board == null)
+        {
+            _board = GetComponent<Board>();
+        }
     }
 
     private void Start()

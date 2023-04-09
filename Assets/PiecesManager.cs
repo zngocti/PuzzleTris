@@ -9,6 +9,11 @@ public enum Direction
     Left
 }
 
+public abstract class PiecesManager : MonoBehaviour
+{
+
+}
+
 public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
 {
     [SerializeField]
