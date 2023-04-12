@@ -14,18 +14,15 @@ public enum PieceType
 }
 
 [RequireComponent(typeof(Board))]
-public class Player : MonoBehaviour
+public abstract class Player : MonoBehaviour
 {
     [SerializeField]
-    private string _name;
+    protected string _name;
 
     [SerializeField]
-    private Board _board;
-    ///https://forum.unity.com/threads/put-instance-of-generic-class-in-inspector.1405954/
-    [SerializeField]
-    public PiecesManager set;
-    [SerializeField]
-    private PiecesManager<Piece> _piecesManager;
+    protected Board _board;
+
+    protected TetraManager _piecesManager;
 
     public PieceType _pieceType;
 
@@ -37,7 +34,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         _piecesManager.SetPreviewPositions(_board);
     }

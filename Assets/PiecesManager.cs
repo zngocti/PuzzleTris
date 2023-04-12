@@ -9,11 +9,6 @@ public enum Direction
     Left
 }
 
-public abstract class PiecesManager : MonoBehaviour
-{
-
-}
-
 public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
 {
     [SerializeField]
@@ -45,7 +40,7 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
     protected PieceInBag[] _possiblePieces;
 
     // Start is called before the first frame update
-    public virtual void Start()
+    protected virtual void Start()
     {
         GeneratePool();
         GenerateBagOfPieces();
@@ -107,8 +102,10 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
         return null;
     }
 
-    protected void HoldPiece(Board board)
+    public void HoldPiece(Board board)
     {
+        Vector3Int[] temp;
+
         if (_piecesInBoard.ContainsKey(board.HeldPiecePosition))
         {
             Vector3Int[] oldCurrent = new Vector3Int[_currentPiece.Length];
@@ -118,31 +115,35 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
                 oldCurrent[i] = _currentPiece[i];
             }
 
-            UpdateCurrentPiece(_heldPiece);
-            MovePieceToPivotPosition(board, _heldPiece, board.StartPosition);
+            temp = MovePieceToPivotPosition(board, _heldPiece, board.TemporalPosition);
+            UpdateCurrentPiece(temp);
 
-            SetPieceNoCurrent(oldCurrent);
-            UpdateHeldPiece(oldCurrent);
-            MovePieceToPivotPosition(board, oldCurrent, board.HeldPiecePosition);
+            temp = MovePieceToPivotPosition(board, oldCurrent, board.HeldPiecePosition);
+            SetPieceNoCurrent(temp);
+            UpdateHeldPiece(temp);
+
+            temp = MovePieceToPivotPosition(board, _currentPiece, board.StartPosition);
+            UpdateCurrentPiece(temp);
 
             return;
         }
 
-        SetPieceNoCurrent(_currentPiece);
-        UpdateHeldPiece(_currentPiece);
-        MovePieceToPivotPosition(board, _currentPiece, board.HeldPiecePosition);
+        temp = MovePieceToPivotPosition(board, _currentPiece, board.HeldPiecePosition);
+        SetPieceNoCurrent(temp);
+        UpdateHeldPiece(temp);
 
         //hacer que la current sea la siguiente de las preview
         SetStartPieceAndUpdate(board);
     }
 
-    protected void MovePieceToPivotPosition(Board board, Vector3Int[] fromPos , Vector3Int pivotPosition)
+    //esto regresa las posiciones finales
+    protected Vector3Int[] MovePieceToPivotPosition(Board board, Vector3Int[] fromPos , Vector3Int pivotPosition)
     {
         int pivot = -1;
 
         for (int i = 0; i < fromPos.Length; i++)
         {
-            if (_piecesInBoard[fromPos[i]].IsPivot)
+            if (_piecesInBoard.GetValueOrDefault(fromPos[i]).IsPivot)
             {
                 pivot = i;
                 break;
@@ -151,8 +152,9 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
 
         if (pivot < 0)
         {
+            Debug.Log("No pivot");
             //si no hay pivote
-            return;
+            return null;
             //tal vez hacer que el pivote sea igualmente el 0, asumiendo que hay al menos una pieza?
         }
         //generar posiciones para ir a la posicion deseada
@@ -161,26 +163,43 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
         for (int i = 0; i < fromPos.Length; i++)
         {
             //agarro las coordenadas del pivote, les resto la de la parte de la pieza para ver el offset y a eso le sumo la nueva position para saber a donde va a ir
-            temporalPosition[i].x = fromPos[pivot].x - fromPos[i].x + pivotPosition.x;
-            temporalPosition[i].y = fromPos[pivot].y - fromPos[i].y + pivotPosition.y;
+            temporalPosition[i].x = fromPos[i].x - fromPos[pivot].x + pivotPosition.x;
+            temporalPosition[i].y = fromPos[i].y - fromPos[pivot].y + pivotPosition.y;
         }
 
-        MoveFromTo(board, fromPos, temporalPosition);
+        MoveFromTo(board, fromPos, temporalPosition, false);
+
+        return temporalPosition;
     }
 
     protected void SetStartPieceAndUpdate(Board board)
     {
-        MovePieceToPivotPosition(board, _previewPieces[0], board.StartPosition);
-        UpdateCurrentPiece(_previewPieces[0]);
+        if (_previewPieces[0] == null)
+        {
+            SetFirstPreview(board);
+        }
+
+        Vector3Int[] temp =  MovePieceToPivotPosition(board, _previewPieces[0], board.StartPosition);
+        UpdateCurrentPiece(temp);
+
 
         for (int i = 1; i < _previewPieces.Length; i++)
         {
-            MovePieceToPivotPosition(board, _previewPieces[i], board.PreviewPositions[i - 1]);
-            UpdatePreviewPiece(_previewPieces[i], i - 1);
+            temp = MovePieceToPivotPosition(board, _previewPieces[i], board.PreviewPositions[i - 1]);
+            UpdatePreviewPiece(temp, i - 1);
         }
 
         //conseguir nueva pieza para la quinta preview
         UpdatePreviewPiece(GeneratePieceInBoard(board, board.PreviewPositions[board.PreviewPositions.Length - 1]), _previewPieces.Length - 1);
+    }
+
+    //una vez
+    protected void SetFirstPreview(Board board)
+    {
+        for (int i = 0; i < _previewPieces.Length; i++)
+        {
+            UpdatePreviewPiece(GeneratePieceInBoard(board, board.PreviewPositions[i]), i);
+        }
     }
 
     protected Vector3Int[] GeneratePieceInBoard(Board board, Vector3Int pivotPosition)
@@ -272,7 +291,11 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
 
     protected bool UpdateCurrentPiece(Vector3Int[] newCurrentPiece)
     {
-        if (_currentPiece.Length != newCurrentPiece.Length)
+        if (_currentPiece == null)
+        {
+            _currentPiece = new Vector3Int[newCurrentPiece.Length];
+        }
+        else if (_currentPiece.Length != newCurrentPiece.Length)
         {
             _currentPiece = new Vector3Int[newCurrentPiece.Length];
         }
@@ -296,7 +319,11 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
 
     protected bool UpdateHeldPiece(Vector3Int[] newHeldPiece)
     {
-        if (_heldPiece.Length != newHeldPiece.Length)
+        if (_heldPiece == null)
+        {
+            _heldPiece = new Vector3Int[newHeldPiece.Length];
+        }
+        else if (_heldPiece.Length != newHeldPiece.Length)
         {
             _heldPiece = new Vector3Int[newHeldPiece.Length];
         }
@@ -316,7 +343,11 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
             return false;
         }
 
-        if (_previewPieces[spaceToUpdate].Length != newPreviewPiece.Length)
+        if (_previewPieces[spaceToUpdate] == null)
+        {
+            _previewPieces[spaceToUpdate] = new Vector3Int[newPreviewPiece.Length];
+        }
+        else if (_previewPieces[spaceToUpdate].Length != newPreviewPiece.Length)
         {
             _previewPieces[spaceToUpdate] = new Vector3Int[newPreviewPiece.Length];
         }
@@ -329,10 +360,10 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
         return true;
     }
 
-    protected abstract bool CanMoveFromTo(Board board, Vector3Int[] fromPos, Vector3Int[] toPos);
-    protected abstract bool MoveFromTo(Board board, Vector3Int[] fromPos, Vector3Int[] toPos);
-    protected abstract bool MoveUpdateCurrentPieceTo(Board board, Vector3Int[] toPos);
-    protected abstract bool MovePieceToDirection(Board board, Direction direction);
-    protected abstract bool RotatePiece(Board board, Direction direction);
+    protected abstract bool CanMoveFromTo(Board board, Vector3Int[] fromPos, Vector3Int[] toPos, bool insideBoard);
+    protected abstract bool MoveFromTo(Board board, Vector3Int[] fromPos, Vector3Int[] toPos, bool insideBoard);
+    protected abstract bool MoveUpdateCurrentPieceTo(Board board, Vector3Int[] toPos, bool insideBoard );
+    public abstract bool MovePieceToDirection(Board board, Direction direction);
+    public abstract bool RotatePiece(Board board, Direction direction);
     protected abstract void CheckForMatch(Board board);
 }

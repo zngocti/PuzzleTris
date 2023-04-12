@@ -13,10 +13,10 @@ public abstract class Piece : MonoBehaviour
     protected Tile _tile;
 
     [SerializeField]
-    protected ArrayLayout _form;
+    protected ArrayLayout _form = new ArrayLayout();
 
     [SerializeField]
-    protected ArrayLayout _pivotLocation;
+    protected ArrayLayout _pivotLocation = new ArrayLayout();
 
     public bool IsPivot { get => _isPivot; }
     public bool IsCurrentPiece { get => _isCurrentPiece; }
@@ -26,6 +26,11 @@ public abstract class Piece : MonoBehaviour
     public ArrayLayout Form { get => _form; }
 
     public ArrayLayout PivotLocation { get => _pivotLocation; }
+
+    private void Awake()
+    {
+
+    }
 
     public void SetPiece(Tile newTile, ArrayLayout newForm, ArrayLayout newPivotLocation, bool isPivot = false)
     {
@@ -88,10 +93,11 @@ public abstract class Piece : MonoBehaviour
                 if (_form.rows[i].row[c])
                 {
                     //como c funciona igual quee X lo coloco directamnte
-                    //pero la i al ser Y en direccion opuesta a la que necesito tengo que usar el maximo num, o sea el length, restar i y luego restar 1
-                    //de esa forma el de arriba de todo pasa a ser 5 y el de abajo de todo 0 como la Y que necesito
-                    temporal[amount].x = firstNumPivot - c;
-                    temporal[amount].y = secondNumPivot - _form.rows.Length - i - 1;
+                    //pero la i al ser Y en direccion opuesta tengo que invertir la direccion de ambos num primero usando el length y restando
+                    //luego puedo hacer el calculo de pivote de forma normal
+                    //hacerlo antes no funcionaria igual porque al ir in direccion contraria se tendria que invertir la resta
+                    temporal[amount].x = c - secondNumPivot;
+                    temporal[amount].y = (_form.rows.Length - i) - (_form.rows.Length - firstNumPivot);
                     amount++;
                 }
             }

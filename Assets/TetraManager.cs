@@ -5,7 +5,7 @@ using System;
 
 public class TetraManager : PiecesManager<TetraPiece>
 {
-    protected override bool CanMoveFromTo(Board board, Vector3Int[] fromPos, Vector3Int[] toPos)
+    protected override bool CanMoveFromTo(Board board, Vector3Int[] fromPos, Vector3Int[] toPos, bool insideBoard)
     {
         if (fromPos.Length != toPos.Length)
         {
@@ -16,9 +16,12 @@ public class TetraManager : PiecesManager<TetraPiece>
 
         for (int i = 0; i < toPos.Length; i++)
         {
-            if (toPos[i].x < 0 || toPos[i].x > board.Width || toPos[i].y < 0)
+            if (insideBoard)
             {
-                return false;
+                if (toPos[i].x < 0 || toPos[i].x > board.Width - 1 || toPos[i].y < 0)
+                {
+                    return false;
+                }
             }
 
             if (board.IsOccupied(toPos[i]) && _piecesInBoard.TryGetValue(toPos[i], out value))
@@ -33,10 +36,11 @@ public class TetraManager : PiecesManager<TetraPiece>
         return true;
     }
 
-    protected override bool MoveFromTo(Board board, Vector3Int[] fromPos, Vector3Int[] toPos)
+    protected override bool MoveFromTo(Board board, Vector3Int[] fromPos, Vector3Int[] toPos, bool insideBoard)
     {
-        if (!CanMoveFromTo(board, fromPos, toPos))
+        if (!CanMoveFromTo(board, fromPos, toPos, insideBoard))
         {
+            Debug.Log("No puede mover");
             return false;
         }
 
@@ -58,9 +62,9 @@ public class TetraManager : PiecesManager<TetraPiece>
         return true;
     }
 
-    protected override bool MoveUpdateCurrentPieceTo(Board board, Vector3Int[] toPos)
+    protected override bool MoveUpdateCurrentPieceTo(Board board, Vector3Int[] toPos, bool insideBoard)
     {
-        if (!MoveFromTo(board, _currentPiece, toPos))
+        if (!MoveFromTo(board, _currentPiece, toPos, insideBoard))
         {
             return false;
         }
@@ -116,7 +120,7 @@ public class TetraManager : PiecesManager<TetraPiece>
         return true;
     }*/
 
-    protected override bool MovePieceToDirection(Board board, Direction direction)
+    public override bool MovePieceToDirection(Board board, Direction direction)
     {
         Vector3Int[] newPos = new Vector3Int[_currentPiece.Length];
 
@@ -147,10 +151,10 @@ public class TetraManager : PiecesManager<TetraPiece>
                 break;
         }
 
-        return MoveUpdateCurrentPieceTo(board, newPos);
+        return MoveUpdateCurrentPieceTo(board, newPos, true);
     }
 
-    protected override bool RotatePiece(Board board, Direction direction = Direction.Right)
+    public override bool RotatePiece(Board board, Direction direction = Direction.Right)
     {
         if (direction != Direction.Right && direction != Direction.Left)
         {
@@ -196,7 +200,7 @@ public class TetraManager : PiecesManager<TetraPiece>
         }
 
         //intento rotarla con la rotacion normal
-        if (MoveUpdateCurrentPieceTo(board, posToMove))
+        if (MoveUpdateCurrentPieceTo(board, posToMove, true))
         {
             return true;
         }
@@ -225,7 +229,7 @@ public class TetraManager : PiecesManager<TetraPiece>
             }
 
             //intento hacer la rotacion
-            if (MoveUpdateCurrentPieceTo(board, posToMove))
+            if (MoveUpdateCurrentPieceTo(board, posToMove, true))
             {
                 return true;
             }
@@ -247,7 +251,7 @@ public class TetraManager : PiecesManager<TetraPiece>
     }
 
     // Start is called before the first frame update
-    public override void Start()
+    protected override void Start()
     {
         base.Start();
     }
@@ -255,6 +259,17 @@ public class TetraManager : PiecesManager<TetraPiece>
     // Update is called once per frame
     void Update()
     {
-        
+
+    }
+
+    public void StartGame(Board board)
+    {
+        SetStartPieceAndUpdate(board);
+    }
+
+    public void NextPiece(Board board)
+    {
+        SetPieceNoCurrent(_currentPiece);
+        SetStartPieceAndUpdate(board);
     }
 }

@@ -29,11 +29,16 @@ public class Board : MonoBehaviour
     [SerializeField]
     Vector3Int _heldPiecePosition;
 
+    [SerializeField]
+    Vector3Int _temporalPosition;
+
     public int Width { get => _width; }
 
     public Vector3Int[] PreviewPositions { get => _previewPositions; }
     public Vector3Int StartPosition { get => _startPosition; }
     public Vector3Int HeldPiecePosition { get => _heldPiecePosition; }
+
+    public Vector3Int TemporalPosition { get => _temporalPosition; }
 
     private void Awake()
     {

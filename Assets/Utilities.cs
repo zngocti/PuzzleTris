@@ -62,6 +62,17 @@ public class ReadOnlyDrawer : PropertyDrawer
 [System.Serializable]
 public class ArrayLayout
 {
+    static private int _gridSize = 5; //Grid 5x5
+
+    public ArrayLayout()
+    {
+        rows = new rowData[_gridSize];
+
+        for (int i = 0; i < _gridSize; i++)
+        {
+            rows[i].row = new bool[_gridSize];
+        }
+    }
 
     [System.Serializable]
     public struct rowData
@@ -69,7 +80,7 @@ public class ArrayLayout
         public bool[] row;
     }
 
-    public rowData[] rows = new rowData[5]; //Grid of 5x5
+    public rowData[] rows = new rowData[_gridSize];
 }
 
 [CustomPropertyDrawer(typeof(ArrayLayout))]
