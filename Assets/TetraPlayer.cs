@@ -33,6 +33,7 @@ public class TetraPlayer : Player
         {
             _gameStarted = true;
             _tetraManager.StartGame(_board);
+            _tetraManager.UpdateShadow(_board);
         }
 
         if (_gameStarted)
@@ -67,10 +68,12 @@ public class TetraPlayer : Player
             else if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 _tetraManager.RotatePiece(_board, Direction.Left);
+                _tetraManager.UpdateShadow(_board);
             }
             else if (Input.GetKeyDown(KeyCode.C))
             {
                 _tetraManager.RotatePiece(_board, Direction.Right);
+                _tetraManager.UpdateShadow(_board);
             }
             else if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -85,6 +88,7 @@ public class TetraPlayer : Player
             else if (Input.GetKeyDown(KeyCode.LeftShift))
             {
                 _tetraManager.HoldPiece(_board);
+                _tetraManager.UpdateShadow(_board);
             }
 
             if (Input.GetKeyDown(KeyCode.R))
@@ -110,7 +114,10 @@ public class TetraPlayer : Player
         {
             if (_keySpeedCurrent >= _keySpeed)
             {
-                _tetraManager.MovePieceToDirection(_board, myDirection);
+                if (_tetraManager.MovePieceToDirection(_board, myDirection))
+                {
+                    _tetraManager.UpdateShadow(_board);
+                }
                 _keySpeedCurrent = 0;
                 if (_keySpeed > _keySpeedMin)
                 {
@@ -127,7 +134,10 @@ public class TetraPlayer : Player
             _keySpeedCurrent = 0;
             _keySpeed = _keySpeedMax;
             _lastKey = myKey;
-            _tetraManager.MovePieceToDirection(_board, myDirection);
+            if (_tetraManager.MovePieceToDirection(_board, myDirection))
+            {
+                _tetraManager.UpdateShadow(_board);
+            }
         }
     }
 

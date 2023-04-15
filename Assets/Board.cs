@@ -122,4 +122,20 @@ public class Board : MonoBehaviour
     {
         _tilemap.SetTile(pos, tile);
     }
+
+    public void SetTileIfEmpty(Vector3Int pos, Tile tile)
+    {
+        if (!_tilemap.HasTile(pos))
+        {
+            _tilemap.SetTile(pos, tile);
+        }
+    }
+
+    public void RemoveTileIfInPosition(Vector3Int pos, Tile tile)
+    {
+        if (_tilemap.GetTile(pos) == tile)
+        {
+            _tilemap.SetTile(pos, null);
+        }
+    }
 }

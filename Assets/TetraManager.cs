@@ -5,6 +5,9 @@ using System;
 
 public class TetraManager : PiecesManager<TetraPiece>
 {
+    [SerializeField]
+    private TetraShadow _shadowPiece;
+
     protected override bool CanMoveFromTo(Board board, Vector3Int[] fromPos, Vector3Int[] toPos, bool insideBoard)
     {
         if (fromPos.Length != toPos.Length)
@@ -315,6 +318,11 @@ public class TetraManager : PiecesManager<TetraPiece>
     {
         SetPieceNoCurrent(_currentPiece);
         SetStartPieceAndUpdate(board);
+    }
+
+    public void UpdateShadow(Board board)
+    {
+        _shadowPiece.SetShadow(board, _currentPiece, _piecesInBoard);
     }
 
     public void DebugPiece()

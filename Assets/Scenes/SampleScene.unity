@@ -178,6 +178,7 @@ GameObject:
   m_Component:
   - component: {fileID: 241966913}
   - component: {fileID: 241966912}
+  - component: {fileID: 241966914}
   m_Layer: 0
   m_Name: GameObject Tetra Manager
   m_TagString: Untagged
@@ -213,6 +214,7 @@ MonoBehaviour:
     _amountInBag: 2
   - _pieceType: {fileID: 1286084722}
     _amountInBag: 2
+  _shadowPiece: {fileID: 241966914}
 --- !u!4 &241966913
 Transform:
   m_ObjectHideFlags: 0
@@ -228,6 +230,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &241966914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 241966911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c0cafc82a7680b49991e99280575dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _shadowTile: {fileID: 11400000, guid: 237d3568c8b9ff64b80f5bdcaa729566, type: 2}
 --- !u!1 &276329948
 GameObject:
   m_ObjectHideFlags: 0
