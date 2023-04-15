@@ -24,7 +24,7 @@ public class TetraManager : PiecesManager<TetraPiece>
                 }
             }
 
-            if (board.IsOccupied(toPos[i]) && _piecesInBoard.TryGetValue(toPos[i], out value))
+            if (_piecesInBoard.TryGetValue(toPos[i], out value))
             {
                 if (!value.IsCurrentPiece)
                 {
@@ -154,45 +154,53 @@ public class TetraManager : PiecesManager<TetraPiece>
         return MoveUpdateCurrentPieceTo(board, newPos, true);
     }
 
-    public override bool RotatePiece(Board board, Direction direction = Direction.Right)
+    public override Vector3Int[] RotatePiece(Board board, Direction direction = Direction.Right, bool insideBoard = true, Vector3Int[] _piecePosition = null)
     {
         if (direction != Direction.Right && direction != Direction.Left)
         {
-            return false;
+            return null;
+        }
+
+        bool isCurrent = false;
+
+        if (_piecePosition == null)
+        {
+            _piecePosition = _currentPiece;
+            isCurrent = true;
         }
 
         Vector3Int myPivot = new Vector3Int();
 
-        for (int i = 0; i < _currentPiece.Length; i++)
+        for (int i = 0; i < _piecePosition.Length; i++)
         {
-            if (_piecesInBoard[_currentPiece[i]].IsPivot)
+            if (_piecesInBoard[_piecePosition[i]].IsPivot)
             {
-                myPivot = _currentPiece[i];
+                myPivot = _piecePosition[i];
                 break;
             }
 
-            if (i == _currentPiece.Length - 1)
+            if (i == _piecePosition.Length - 1)
             {
                 //no hay pivote, es una pieza cuadrada por lo que no hay que hacer nada para que se considere rotada
                 //tengo que cambiar un poco esto, las piezas cuadradas tienen que tener pivote para ser ubicadas
-                return true;
+                return _piecePosition;
             }
         }
 
-        Vector3Int[] posToMove = new Vector3Int[_currentPiece.Length];
+        Vector3Int[] posToMove = new Vector3Int[_piecePosition.Length];
 
         //calculo de rotacion normal
-        for (int i = 0; i < _currentPiece.Length; i++)
+        for (int i = 0; i < _piecePosition.Length; i++)
         {
             switch (direction)
             {
                 case Direction.Right:
-                    posToMove[i].x = _currentPiece[i].y - myPivot.y + myPivot.x;
-                    posToMove[i].y = -(_currentPiece[i].x - myPivot.x) + myPivot.y;
+                    posToMove[i].x = _piecePosition[i].y - myPivot.y + myPivot.x;
+                    posToMove[i].y = -(_piecePosition[i].x - myPivot.x) + myPivot.y;
                     break;
                 case Direction.Left:
-                    posToMove[i].x = -(_currentPiece[i].y - myPivot.y) + myPivot.x;
-                    posToMove[i].y = _currentPiece[i].x - myPivot.x + myPivot.y;
+                    posToMove[i].x = -(_piecePosition[i].y - myPivot.y) + myPivot.x;
+                    posToMove[i].y = _piecePosition[i].x - myPivot.x + myPivot.y;
                     break;
                 default:
                     break;
@@ -200,9 +208,27 @@ public class TetraManager : PiecesManager<TetraPiece>
         }
 
         //intento rotarla con la rotacion normal
-        if (MoveUpdateCurrentPieceTo(board, posToMove, true))
+        if (isCurrent)
         {
-            return true;
+            if (MoveUpdateCurrentPieceTo(board, posToMove, insideBoard))
+            {
+                for (int i = 0; i < posToMove.Length; i++)
+                {
+                    _piecesInBoard[posToMove[i]].RotateCurrentPosition(direction);
+                }
+                return posToMove;
+            }
+        }
+        else
+        {
+            if (MoveFromTo(board, _piecePosition, posToMove, insideBoard))
+            {
+                for (int i = 0; i < posToMove.Length; i++)
+                {
+                    _piecesInBoard[posToMove[i]].RotateCurrentPosition(direction);
+                }
+                return posToMove;
+            }
         }
 
         //obtengo el array con los offset desde el pivote
@@ -210,12 +236,12 @@ public class TetraManager : PiecesManager<TetraPiece>
 
         if (offsetPositons == null)
         {
-            return false;
+            return _piecePosition;
         }
 
         if (offsetPositons.Length == 0)
         {
-            return false;
+            return _piecePosition;
         }
 
         //intento rotarlo con los diferentes offsets aplicados
@@ -229,9 +255,27 @@ public class TetraManager : PiecesManager<TetraPiece>
             }
 
             //intento hacer la rotacion
-            if (MoveUpdateCurrentPieceTo(board, posToMove, true))
+            if (isCurrent)
             {
-                return true;
+                if (MoveUpdateCurrentPieceTo(board, posToMove, insideBoard))
+                {
+                    for (int c = 0; c < posToMove.Length; c++)
+                    {
+                        _piecesInBoard[posToMove[c]].RotateCurrentPosition(direction);
+                    }
+                    return posToMove;
+                }
+            }
+            else
+            {
+                if (MoveFromTo(board, _piecePosition, posToMove, insideBoard))
+                {
+                    for (int c = 0; c < posToMove.Length; c++)
+                    {
+                        _piecesInBoard[posToMove[c]].RotateCurrentPosition(direction);
+                    }
+                    return posToMove;
+                }
             }
 
             //remuevo el offset
@@ -242,7 +286,7 @@ public class TetraManager : PiecesManager<TetraPiece>
             }
         }
 
-        return false;
+        return _piecePosition;
     }
 
     protected override void CheckForMatch(Board board)
@@ -271,5 +315,18 @@ public class TetraManager : PiecesManager<TetraPiece>
     {
         SetPieceNoCurrent(_currentPiece);
         SetStartPieceAndUpdate(board);
+    }
+
+    public void DebugPiece()
+    {
+        TetraPiece outTemp;
+
+        for (int i = 0; i < _currentPiece.Length; i++)
+        {
+            if (_piecesInBoard.TryGetValue(_currentPiece[i], out outTemp))
+            {
+                Debug.Log("piece id: " + outTemp.GetPieceId + " position: " + outTemp.CurrentPosition);
+            }
+        }
     }
 }

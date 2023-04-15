@@ -104,6 +104,7 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
 
     public void HoldPiece(Board board)
     {
+        //poner un breakpoint aca
         Vector3Int[] temp;
 
         if (_piecesInBoard.ContainsKey(board.HeldPiecePosition))
@@ -115,13 +116,30 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
                 oldCurrent[i] = _currentPiece[i];
             }
 
+            //muevo la pieza guardada a un lugar temporal
             temp = MovePieceToPivotPosition(board, _heldPiece, board.TemporalPosition);
             UpdateCurrentPiece(temp);
 
+            //muevo la pieza actual al lugar de guardado
             temp = MovePieceToPivotPosition(board, oldCurrent, board.HeldPiecePosition);
+
+            //la roto a su posicion original
+
+            T outPiece;
+
+            if (_piecesInBoard.TryGetValue(temp[0], out outPiece))
+            {
+                while (outPiece.CurrentPosition != 0)
+                {
+                    temp = RotatePiece(board, Direction.Right, false, temp);
+                }
+            }
+
+
             SetPieceNoCurrent(temp);
             UpdateHeldPiece(temp);
 
+            //muevo la pieza del lugar temporal a la parte inicial del tablero
             temp = MovePieceToPivotPosition(board, _currentPiece, board.StartPosition);
             UpdateCurrentPiece(temp);
 
@@ -129,6 +147,17 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
         }
 
         temp = MovePieceToPivotPosition(board, _currentPiece, board.HeldPiecePosition);
+
+        T tempPiece;
+
+        if (_piecesInBoard.TryGetValue(temp[0], out tempPiece))
+        {
+            while (tempPiece.CurrentPosition != 0)
+            {
+                temp = RotatePiece(board, Direction.Right, false, temp);
+            }
+        }
+
         SetPieceNoCurrent(temp);
         UpdateHeldPiece(temp);
 
@@ -141,9 +170,16 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
     {
         int pivot = -1;
 
+        T outTemp;
+
         for (int i = 0; i < fromPos.Length; i++)
         {
-            if (_piecesInBoard.GetValueOrDefault(fromPos[i]).IsPivot)
+            if (!_piecesInBoard.TryGetValue(fromPos[i], out outTemp))
+            {
+                Debug.Log("No esta en el dic");
+                return null;
+            }
+            if (outTemp.IsPivot)
             {
                 pivot = i;
                 break;
@@ -221,47 +257,29 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
             offset[i].x += pivotPosition.x;
             offset[i].y += pivotPosition.y;
 
-            if (i < offset.Length - 1 && offset.Length > 1)
+            auxPiece = GetEmptyPiece();
+
+            if (auxPiece == null)
             {
-                auxPiece = GetEmptyPiece();
+                return null;
+            }
 
-                if (auxPiece == null)
-                {
-                    return null;
-                }
+            auxPiece.SetPiece(temporalPiece);
 
-                auxPiece.SetPiece(temporalPiece);
-
-                if (offset[i].x == pivotPosition.x && offset[i].y == pivotPosition.y)
-                {
-                    auxPiece.SetAsPivot();
-                }
-                else
-                {
-                    auxPiece.SetAsPivot(false);
-                }
-
-                auxPiece.SetInUse();
-                _piecesInBoard.Add(new Vector3Int(offset[i].x, offset[i].y), auxPiece);
-
-                board.SetTile(new Vector3Int(offset[i].x, offset[i].y), auxPiece.Tile);
+            if (offset[i].x == pivotPosition.x && offset[i].y == pivotPosition.y)
+            {
+                auxPiece.SetAsPivot();
             }
             else
             {
-                if (offset[i].x == pivotPosition.x && offset[i].y == pivotPosition.y)
-                {
-                    temporalPiece.SetAsPivot();
-                }
-                else
-                {
-                    temporalPiece.SetAsPivot(false);
-                }
-
-                temporalPiece.SetInUse();
-                _piecesInBoard.Add(new Vector3Int(offset[i].x, offset[i].y), temporalPiece);
-
-                board.SetTile(new Vector3Int(offset[i].x, offset[i].y), temporalPiece.Tile);
+                auxPiece.SetAsPivot(false);
             }
+
+            auxPiece.SetInUse();
+            _piecesInBoard.Add(new Vector3Int(offset[i].x, offset[i].y), auxPiece);
+
+            board.SetTile(new Vector3Int(offset[i].x, offset[i].y), auxPiece.Tile);
+
         }
 
         return offset;
@@ -300,10 +318,19 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
             _currentPiece = new Vector3Int[newCurrentPiece.Length];
         }
 
+        T outTemp;
+
         for (int i = 0; i < _currentPiece.Length; i++)
         {
             _currentPiece[i] = newCurrentPiece[i];
-            _piecesInBoard.GetValueOrDefault(_currentPiece[i]).SetAsCurrentPiece();
+            if (_piecesInBoard.TryGetValue(_currentPiece[i], out outTemp))
+            {
+                outTemp.SetAsCurrentPiece();
+            }
+            else
+            {
+                return false;
+            }
         }
 
         return true;
@@ -311,9 +338,14 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
 
     protected void SetPieceNoCurrent(Vector3Int[] piece)
     {
+        T temporalOut;
+
         for (int i = 0; i < piece.Length; i++)
         {
-            _piecesInBoard.GetValueOrDefault(piece[i]).SetAsCurrentPiece(false);
+            if (_piecesInBoard.TryGetValue(piece[i], out temporalOut))
+            {
+                temporalOut.SetAsCurrentPiece(false);
+            }
         }
     }
 
@@ -364,6 +396,6 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
     protected abstract bool MoveFromTo(Board board, Vector3Int[] fromPos, Vector3Int[] toPos, bool insideBoard);
     protected abstract bool MoveUpdateCurrentPieceTo(Board board, Vector3Int[] toPos, bool insideBoard );
     public abstract bool MovePieceToDirection(Board board, Direction direction);
-    public abstract bool RotatePiece(Board board, Direction direction);
+    public abstract Vector3Int[] RotatePiece(Board board, Direction direction, bool insideBoard, Vector3Int[] piecePosition);
     protected abstract void CheckForMatch(Board board);
 }

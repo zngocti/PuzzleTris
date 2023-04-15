@@ -27,9 +27,16 @@ public abstract class Piece : MonoBehaviour
 
     public ArrayLayout PivotLocation { get => _pivotLocation; }
 
+    protected int _currentPosition = 0;
+
+    public int CurrentPosition { get => _currentPosition; }
+
+    private int _pieceId = 0;
+    public int GetPieceId { get => _pieceId; }
+
     private void Awake()
     {
-
+        _pieceId = Utilities.GetID();
     }
 
     public void SetPiece(Tile newTile, ArrayLayout newForm, ArrayLayout newPivotLocation, bool isPivot = false)

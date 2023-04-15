@@ -84,10 +84,11 @@ public class Board : MonoBehaviour
         }
     }
 
+    /*
     public bool IsOccupied(Vector3Int pos)
     {
         return _tilemap.HasTile(pos);
-    }
+    }*/
 
     public bool MoveTilesFromTo(Vector3Int[] fromPos, Vector3Int[] toPos)
     {

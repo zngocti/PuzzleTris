@@ -5,6 +5,18 @@ using UnityEngine;
 
 public static class Utilities
 {
+    //piece ID
+    static int _currentID = 0;
+
+    public static int GetID()
+    {
+        int tempID = _currentID;
+        _currentID++;
+
+        return tempID;
+    }
+
+    //shuffle list
     public static void Shuffle<T>(this IList<T> list)
     {
         int n = list.Count;

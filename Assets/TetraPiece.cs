@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class TetraPiece : Piece
 {
-    private int _currentPosition = 0;
-
     [System.Serializable]
     public struct PossiblePositions
     {
@@ -26,7 +24,7 @@ public class TetraPiece : Piece
                 {
                     return _positionsToTry[_currentPosition + 1]._clockwiseAttempts;
                 }
-                
+
                 return _positionsToTry[0]._clockwiseAttempts;
 
             case Direction.Left:
