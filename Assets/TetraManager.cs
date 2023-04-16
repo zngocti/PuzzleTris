@@ -157,8 +157,10 @@ public class TetraManager : PiecesManager<TetraPiece>
         return MoveUpdateCurrentPieceTo(board, newPos, true);
     }
 
-    public override Vector3Int[] RotatePiece(Board board, Direction direction = Direction.Right, bool insideBoard = true, Vector3Int[] _piecePosition = null)
+    public override Vector3Int[] RotatePiece(Board board, out bool pieceMoved, Direction direction = Direction.Right, bool insideBoard = true, Vector3Int[] _piecePosition = null)
     {
+        pieceMoved = false;
+
         if (direction != Direction.Right && direction != Direction.Left)
         {
             return null;
@@ -219,6 +221,7 @@ public class TetraManager : PiecesManager<TetraPiece>
                 {
                     _piecesInBoard[posToMove[i]].RotateCurrentPosition(direction);
                 }
+                pieceMoved = true;
                 return posToMove;
             }
         }
@@ -230,6 +233,7 @@ public class TetraManager : PiecesManager<TetraPiece>
                 {
                     _piecesInBoard[posToMove[i]].RotateCurrentPosition(direction);
                 }
+                pieceMoved = true;
                 return posToMove;
             }
         }
@@ -266,6 +270,7 @@ public class TetraManager : PiecesManager<TetraPiece>
                     {
                         _piecesInBoard[posToMove[c]].RotateCurrentPosition(direction);
                     }
+                    pieceMoved = true;
                     return posToMove;
                 }
             }
@@ -277,6 +282,7 @@ public class TetraManager : PiecesManager<TetraPiece>
                     {
                         _piecesInBoard[posToMove[c]].RotateCurrentPosition(direction);
                     }
+                    pieceMoved = true;
                     return posToMove;
                 }
             }

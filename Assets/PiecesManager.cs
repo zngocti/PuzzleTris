@@ -126,12 +126,13 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
             //la roto a su posicion original
 
             T outPiece;
+            bool outBool;
 
             if (_piecesInBoard.TryGetValue(temp[0], out outPiece))
             {
                 while (outPiece.CurrentPosition != 0)
                 {
-                    temp = RotatePiece(board, Direction.Right, false, temp);
+                    temp = RotatePiece(board, out outBool, Direction.Right, false, temp);
                 }
             }
 
@@ -149,12 +150,13 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
         temp = MovePieceToPivotPosition(board, _currentPiece, board.HeldPiecePosition);
 
         T tempPiece;
+        bool tempBool;
 
         if (_piecesInBoard.TryGetValue(temp[0], out tempPiece))
         {
             while (tempPiece.CurrentPosition != 0)
             {
-                temp = RotatePiece(board, Direction.Right, false, temp);
+                temp = RotatePiece(board, out tempBool, Direction.Right, false, temp);
             }
         }
 
@@ -396,6 +398,6 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
     protected abstract bool MoveFromTo(Board board, Vector3Int[] fromPos, Vector3Int[] toPos, bool insideBoard);
     protected abstract bool MoveUpdateCurrentPieceTo(Board board, Vector3Int[] toPos, bool insideBoard );
     public abstract bool MovePieceToDirection(Board board, Direction direction);
-    public abstract Vector3Int[] RotatePiece(Board board, Direction direction, bool insideBoard, Vector3Int[] piecePosition);
+    public abstract Vector3Int[] RotatePiece(Board board, out bool pieceMoved, Direction direction, bool insideBoard, Vector3Int[] piecePosition);
     protected abstract void CheckForMatch(Board board);
 }
