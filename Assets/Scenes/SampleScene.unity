@@ -287,6 +287,7 @@ MonoBehaviour:
     - row: 0000010000
     - row: 0000000000
     - row: 0000000000
+  _removingTile: {fileID: 11400000, guid: 0a36ba3c5b6b5f14dad0ba59d5db17ea, type: 2}
   _positionsToTry:
   - _clockwiseAttempts:
     - {x: 0, y: 0, z: 0}
@@ -363,6 +364,7 @@ MonoBehaviour:
     - row: 0000010000
     - row: 0000000000
     - row: 0000000000
+  _removingTile: {fileID: 11400000, guid: 0a36ba3c5b6b5f14dad0ba59d5db17ea, type: 2}
   _positionsToTry:
   - _clockwiseAttempts:
     - {x: 0, y: 0, z: 0}
@@ -693,6 +695,7 @@ MonoBehaviour:
     - row: 0000010000
     - row: 0000000000
     - row: 0000000000
+  _removingTile: {fileID: 11400000, guid: 0a36ba3c5b6b5f14dad0ba59d5db17ea, type: 2}
   _positionsToTry:
   - _clockwiseAttempts:
     - {x: 0, y: 0, z: 0}
@@ -893,6 +896,7 @@ MonoBehaviour:
     - row: 0000010000
     - row: 0000000000
     - row: 0000000000
+  _removingTile: {fileID: 11400000, guid: 0a36ba3c5b6b5f14dad0ba59d5db17ea, type: 2}
   _positionsToTry:
   - _clockwiseAttempts:
     - {x: 0, y: 0, z: 0}
@@ -969,6 +973,7 @@ MonoBehaviour:
     - row: 0000010000
     - row: 0000000000
     - row: 0000000000
+  _removingTile: {fileID: 11400000, guid: 0a36ba3c5b6b5f14dad0ba59d5db17ea, type: 2}
   _positionsToTry:
   - _clockwiseAttempts:
     - {x: 0, y: 0, z: 0}
@@ -1045,6 +1050,7 @@ MonoBehaviour:
     - row: 0000010000
     - row: 0000000000
     - row: 0000000000
+  _removingTile: {fileID: 11400000, guid: 0a36ba3c5b6b5f14dad0ba59d5db17ea, type: 2}
   _positionsToTry:
   - _clockwiseAttempts:
     - {x: 0, y: 0, z: 0}
@@ -1121,6 +1127,7 @@ MonoBehaviour:
     - row: 0000000000
     - row: 0000000000
     - row: 0000000000
+  _removingTile: {fileID: 11400000, guid: 0a36ba3c5b6b5f14dad0ba59d5db17ea, type: 2}
   _positionsToTry:
   - _clockwiseAttempts:
     - {x: 0, y: 0, z: 0}

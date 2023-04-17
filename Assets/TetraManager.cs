@@ -8,6 +8,8 @@ public class TetraManager : PiecesManager<TetraPiece>
     [SerializeField]
     private TetraShadow _shadowPiece;
 
+    private int[] _rowsToCheck;
+
     protected override bool CanMoveFromTo(Board board, Vector3Int[] fromPos, Vector3Int[] toPos, bool insideBoard)
     {
         if (fromPos.Length != toPos.Length)
@@ -43,7 +45,7 @@ public class TetraManager : PiecesManager<TetraPiece>
     {
         if (!CanMoveFromTo(board, fromPos, toPos, insideBoard))
         {
-            Debug.Log("No puede mover");
+            //Debug.Log("No puede mover");
             return false;
         }
 
@@ -76,52 +78,6 @@ public class TetraManager : PiecesManager<TetraPiece>
 
         return true;
     }
-
-    /*
-    protected override bool CanMoveTo(Board board, Direction direction)
-    {
-        //eliminar metodo
-        for (int i = 0; i < _currentPiece.Length; i++)
-        {
-            var pos = _currentPiece[i];
-
-            switch (direction)
-            {
-                case Direction.Right:
-                    if (pos.x + 1 >= board.Width)
-                    {
-                        return false;
-                    }
-                    break;
-                case Direction.Down:
-                    if (pos.y - 1 < 0)
-                    {
-                        return false;
-                    }
-                    break;
-                case Direction.Left:
-                    if (pos.x - 1 < 0)
-                    {
-                        return false;
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-            TetraPiece value;
-
-            if (board.IsOccupied(pos) && _piecesInBoard.TryGetValue(pos, out value))
-            {
-                if (!value.IsCurrentPiece)
-                {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }*/
 
     public override bool MovePieceToDirection(Board board, Direction direction)
     {
@@ -298,9 +254,193 @@ public class TetraManager : PiecesManager<TetraPiece>
         return _piecePosition;
     }
 
-    protected override void CheckForMatch(Board board)
+    public override bool CheckForMatch(Board board)
     {
-        throw new System.NotImplementedException();
+        UpdateRowsToCheck();
+        //ahora que _rowsToCheck tiene numeros diferentes y de menor a mayor compuestos por las y de la pieza actual puedo revisar el match
+
+        Vector3Int position = new Vector3Int();
+
+        bool mark = false;
+
+        TetraPiece piece;
+
+        for (int i = 0; i < _rowsToCheck.Length; i++)
+        {
+            for (int c = 0; c < board.Width; c++)
+            {
+                position.x = c;
+                position.y = _rowsToCheck[i];
+                if (!_piecesInBoard.TryGetValue(position, out piece))
+                {
+                    _rowsToCheck[i] = -1;
+                    break;
+                }
+            }
+        }
+
+        //marcar las piezas
+        for (int i = 0; i < _rowsToCheck.Length; i++)
+        {
+            if (_rowsToCheck[i] < 0)
+            {
+                continue;
+            }
+
+            mark = true;
+
+            for (int c = 0; c < board.Width; c++)
+            {
+                position.x = c;
+                position.y = _rowsToCheck[i];
+                if (_piecesInBoard.TryGetValue(position, out piece))
+                {
+                    piece.MarkPiece();
+                    board.SetTile(position, piece.RemovingTile);
+                }
+            }
+        }
+
+        return mark;
+    }
+
+    public void UpdateRowsToCheck()
+    {
+        int[] tempRowsToCheck = new int[_currentPiece.Length];
+
+        for (int i = 0; i < _currentPiece.Length; i++)
+        {
+            tempRowsToCheck[i] = _currentPiece[i].y;
+        }
+
+        Array.Sort(tempRowsToCheck);
+
+        int differentNumbers = 1;
+
+        for (int i = 1; i < tempRowsToCheck.Length; i++)
+        {
+            if (tempRowsToCheck[i] != tempRowsToCheck[i - 1])
+            {
+                differentNumbers++;
+            }
+        }
+
+        if (_rowsToCheck == null)
+        {
+            _rowsToCheck = new int[differentNumbers];
+        }
+        else if (_rowsToCheck.Length != differentNumbers)
+        {
+            _rowsToCheck = new int[differentNumbers];
+        }
+
+        if (tempRowsToCheck.Length != differentNumbers)
+        {
+            int counter = 0;
+            for (int i = 0; i < tempRowsToCheck.Length; i++)
+            {
+                if (i == 0)
+                {
+                    _rowsToCheck[counter] = tempRowsToCheck[i];
+                    counter++;
+                    continue;
+                }
+
+                if (tempRowsToCheck[i] != tempRowsToCheck[i - 1])
+                {
+                    _rowsToCheck[counter] = tempRowsToCheck[i];
+                    counter++;
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < differentNumbers; i++)
+            {
+                _rowsToCheck[i] = tempRowsToCheck[i];
+            }
+        }
+    }
+
+    public override void DestroyMarkedPieces(Board board)
+    {
+        Vector3Int position = new Vector3Int();
+
+        TetraPiece piece;
+
+        for (int i = 0; i < _rowsToCheck.Length; i++)
+        {
+            if (_rowsToCheck[i] < 0)
+            {
+                continue;
+            }
+
+            for (int c = 0; c < board.Width; c++)
+            {
+                position.x = c;
+                position.y = _rowsToCheck[i];
+                if (_piecesInBoard.TryGetValue(position, out piece))
+                {
+                    if (!piece.IsMarked)
+                    {
+                        continue;
+                    }
+
+                    piece.TurnOff();
+                    _piecesInBoard.Remove(position);
+                    board.SetTile(position, null);
+                }
+            }
+        }
+    }
+
+    public override void MoveAllPiecesDown(Board board)
+    {
+        Vector3Int position = new Vector3Int();
+
+        TetraPiece piece;
+
+        int rowsToGoDown = 0;
+        int counter = 0;
+
+        for (int i = 0; i < board.Height ; i++)
+        {
+            if (counter < _rowsToCheck.Length)
+            {
+                if (_rowsToCheck[counter] < 0)
+                {
+                    counter++;
+                }
+                else if (_rowsToCheck[counter] == i)
+                {
+                    rowsToGoDown++;
+                    counter++;
+                    continue;
+                }
+            }
+
+            if (rowsToGoDown <= 0)
+            {
+                continue;
+            }
+
+            for (int c = 0; c < board.Width; c++)
+            {
+                position.x = c;
+                position.y = i;
+
+                if (_piecesInBoard.TryGetValue(position, out piece))
+                {
+                    _piecesInBoard.Remove(position);
+                    board.SetTile(position, null);
+
+                    position.y -= rowsToGoDown;
+                    
+                    _piecesInBoard.Add(position, piece);
+                    board.SetTile(position, piece.Tile);
+                }
+            }
+        }
     }
 
     // Start is called before the first frame update

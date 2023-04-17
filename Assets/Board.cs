@@ -33,6 +33,7 @@ public class Board : MonoBehaviour
     Vector3Int _temporalPosition;
 
     public int Width { get => _width; }
+    public int Height { get => _height; }
 
     public Vector3Int[] PreviewPositions { get => _previewPositions; }
     public Vector3Int StartPosition { get => _startPosition; }

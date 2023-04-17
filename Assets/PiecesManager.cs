@@ -399,5 +399,8 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
     protected abstract bool MoveUpdateCurrentPieceTo(Board board, Vector3Int[] toPos, bool insideBoard );
     public abstract bool MovePieceToDirection(Board board, Direction direction);
     public abstract Vector3Int[] RotatePiece(Board board, out bool pieceMoved, Direction direction, bool insideBoard, Vector3Int[] piecePosition);
-    protected abstract void CheckForMatch(Board board);
+    public abstract bool CheckForMatch(Board board);
+
+    public abstract void DestroyMarkedPieces(Board board);
+    public abstract void MoveAllPiecesDown(Board board);
 }

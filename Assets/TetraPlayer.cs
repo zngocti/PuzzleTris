@@ -20,6 +20,9 @@ public class TetraPlayer : Player
 
     KeyCode _lastKey = KeyCode.None;
 
+    float _matchTimer = 1.0f;
+    float _matchTimerCurrent = -1;
+
     // Start is called before the first frame update
     protected override void Start()
     {
@@ -29,107 +32,14 @@ public class TetraPlayer : Player
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.I ) && !_gameStarted)
-        {
-            _gameStarted = true;
-            _tetraManager.StartGame(_board);
-            _tetraManager.UpdateShadow(_board);
-        }
+        //bajar pieza segun velocidad del juego
+        ApplyFallToPiece();
 
-        if (_gameStarted)
-        {
-            if (_timerSpeed < _gameSpeed)
-            {
-                _timerSpeed += Time.deltaTime;
-            }
-            else
-            {
-                _timerSpeed = 0;
-                if (!_tetraManager.MovePieceToDirection(_board, Direction.Down))
-                {
-                    _tetraManager.NextPiece(_board);
-                    _tetraManager.UpdateShadow(_board);
-                }
-            }
+        //input
+        ProcessInput();
 
-            //input
-            bool temp;
-
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                if (MoveWithKeySpeed(KeyCode.RightArrow, Direction.Right, out temp))
-                {
-                    if (temp)
-                    {
-                        _tetraManager.UpdateShadow(_board);
-                    }
-                }
-            }
-            else if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                if (MoveWithKeySpeed(KeyCode.LeftArrow, Direction.Left, out temp))
-                {
-                    if (temp)
-                    {
-                        _tetraManager.UpdateShadow(_board);
-                    }
-                }               
-            }
-            else if (Input.GetKey(KeyCode.DownArrow))
-            {
-                //MoveWithKeySpeedDown();
-                if (MoveWithKeySpeed(KeyCode.DownArrow, Direction.Down, out temp))
-                {
-                    if (!temp)
-                    {
-                        _tetraManager.NextPiece(_board);
-                        _tetraManager.UpdateShadow(_board);
-                    }
-                }
-            }
-            else if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                _tetraManager.RotatePiece(_board, out temp, Direction.Left);
-                if (temp)
-                {
-                    _tetraManager.UpdateShadow(_board);
-                }
-            }
-            else if (Input.GetKeyDown(KeyCode.C))
-            {
-                _tetraManager.RotatePiece(_board, out temp, Direction.Right);
-                if (temp)
-                {
-                    _tetraManager.UpdateShadow(_board);
-                }
-            }
-            else if (Input.GetKeyDown(KeyCode.Space))
-            {
-                //MoveWithKeySpeedSpace();
-
-                while (_tetraManager.MovePieceToDirection(_board, Direction.Down))
-                {
-
-                }
-                _tetraManager.NextPiece(_board);
-                _tetraManager.UpdateShadow(_board);
-            }
-            else if (Input.GetKeyDown(KeyCode.LeftShift))
-            {
-                _tetraManager.HoldPiece(_board);
-                _tetraManager.UpdateShadow(_board);
-            }
-
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                _tetraManager.DebugPiece();
-            }
-
-            if (Input.GetKeyUp(_lastKey))
-            {
-                _lastKey = KeyCode.None;
-            }
-        }
+        //revisar si se esta efectuando un match
+        ProcessMatch();
     }
 
     private void Awake()
@@ -182,74 +92,161 @@ public class TetraPlayer : Player
         }
     }
 
-    /*
-    private void MoveWithKeySpeedDown()
+    private void ProcessInput()
     {
-        if (_lastKey == KeyCode.DownArrow)
+        if (Input.GetKey(KeyCode.I) && !_gameStarted)
         {
-            if (_keySpeedCurrent >= _keySpeed)
+            _gameStarted = true;
+            _tetraManager.StartGame(_board);
+            _tetraManager.UpdateShadow(_board);
+            return;
+        }
+        else if (!_gameStarted || _matchTimerCurrent >= 0)
+        {
+            return;
+        }
+
+        bool temp;
+
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            if (MoveWithKeySpeed(KeyCode.RightArrow, Direction.Right, out temp))
             {
-                _keySpeedCurrent = 0;
-                if (_keySpeed > _keySpeedMin)
+                if (temp)
                 {
-                    _keySpeed -= _keySpedRemove;
+                    _tetraManager.UpdateShadow(_board);
                 }
-                if (!_tetraManager.MovePieceToDirection(_board, Direction.Down))
-                {
-                    _tetraManager.NextPiece(_board);
-                }
-            }
-            else
-            {
-                _keySpeedCurrent += Time.deltaTime;
             }
         }
-        else
+        else if (Input.GetKey(KeyCode.LeftArrow))
         {
-            _keySpeedCurrent = 0;
-            _keySpeed = _keySpeedMax;
-            _lastKey = KeyCode.DownArrow;
-            if (!_tetraManager.MovePieceToDirection(_board, Direction.Down))
+            if (MoveWithKeySpeed(KeyCode.LeftArrow, Direction.Left, out temp))
             {
-                _tetraManager.NextPiece(_board);
+                if (temp)
+                {
+                    _tetraManager.UpdateShadow(_board);
+                }
             }
         }
-    }*/
-
-    /*
-    private void MoveWithKeySpeedSpace()
-    {
-        if (_lastKey == KeyCode.Space)
+        else if (Input.GetKey(KeyCode.DownArrow))
         {
-            if (_keySpeedCurrent >= _keySpeed)
+            //MoveWithKeySpeedDown();
+            if (MoveWithKeySpeed(KeyCode.DownArrow, Direction.Down, out temp))
             {
-                _keySpeedCurrent = 0;
-                if (_keySpeed > _keySpeedMin)
+                if (!temp)
                 {
-                    _keySpeed -= _keySpedRemove;
+                    if (_tetraManager.CheckForMatch(_board))
+                    {
+                        //ganar puntos
+                        _matchTimerCurrent = 0;
+                    }
+                    else
+                    {
+                        _tetraManager.NextPiece(_board);
+                        _tetraManager.UpdateShadow(_board);
+                    }
                 }
-
-                while (_tetraManager.MovePieceToDirection(_board, Direction.Down))
-                {
-
-                }
-                _tetraManager.NextPiece(_board);
-            }
-            else
-            {
-                _keySpeedCurrent += Time.deltaTime;
             }
         }
-        else
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            _keySpeedCurrent = 0;
-            _keySpeed = _keySpeedMax;
-            _lastKey = KeyCode.Space;
+            _tetraManager.RotatePiece(_board, out temp, Direction.Left);
+            if (temp)
+            {
+                _tetraManager.UpdateShadow(_board);
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.C))
+        {
+            _tetraManager.RotatePiece(_board, out temp, Direction.Right);
+            if (temp)
+            {
+                _tetraManager.UpdateShadow(_board);
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.Space))
+        {
+            //MoveWithKeySpeedSpace();
+
             while (_tetraManager.MovePieceToDirection(_board, Direction.Down))
             {
 
             }
-            _tetraManager.NextPiece(_board);
+
+            if (_tetraManager.CheckForMatch(_board))
+            {
+                //ganar puntos
+                _matchTimerCurrent = 0;
+            }
+            else
+            {
+                _tetraManager.NextPiece(_board);
+                _tetraManager.UpdateShadow(_board);
+            }
         }
-    }*/
+        else if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            _tetraManager.HoldPiece(_board);
+            _tetraManager.UpdateShadow(_board);
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            _tetraManager.DebugPiece();
+        }
+
+        if (Input.GetKeyUp(_lastKey))
+        {
+            _lastKey = KeyCode.None;
+        }
+    }
+
+    private void ApplyFallToPiece()
+    {
+        if (!_gameStarted || _matchTimerCurrent >= 0)
+        {
+            return;
+        }
+
+        if (_timerSpeed < _gameSpeed)
+        {
+            _timerSpeed += Time.deltaTime;
+        }
+        else
+        {
+            _timerSpeed = 0;
+            if (!_tetraManager.MovePieceToDirection(_board, Direction.Down))
+            {
+                if (_tetraManager.CheckForMatch(_board))
+                {
+                    //ganar puntos
+                    _matchTimerCurrent = 0;
+                }
+                else
+                {
+                    _tetraManager.NextPiece(_board);
+                    _tetraManager.UpdateShadow(_board);
+                }
+            }
+        }
+    }
+
+    private void ProcessMatch()
+    {
+        if (_matchTimerCurrent < 0)
+        {
+            return;
+        }
+
+        _matchTimerCurrent += Time.deltaTime;
+
+        if (_matchTimerCurrent >= _matchTimer)
+        {
+            _matchTimerCurrent = -1;
+            _tetraManager.DestroyMarkedPieces(_board);
+            _tetraManager.MoveAllPiecesDown(_board);
+            _tetraManager.NextPiece(_board);
+            _tetraManager.UpdateShadow(_board);
+        }
+    }
 }

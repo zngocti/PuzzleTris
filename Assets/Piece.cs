@@ -34,15 +34,25 @@ public abstract class Piece : MonoBehaviour
     private int _pieceId = 0;
     public int GetPieceId { get => _pieceId; }
 
+    private bool _isMarked = false;
+
+    public bool IsMarked { get => _isMarked; }
+
+    [SerializeField]
+    protected Tile _removingTile;
+
+    public Tile RemovingTile { get => _removingTile; }
+
     private void Awake()
     {
         _pieceId = Utilities.GetID();
     }
 
-    public void SetPiece(Tile newTile, ArrayLayout newForm, ArrayLayout newPivotLocation, bool isPivot = false)
+    public void SetPiece(Tile newTile, ArrayLayout newForm, ArrayLayout newPivotLocation, Tile removingTile, bool isPivot = false)
     {
         _tile = newTile;
         _isPivot = isPivot;
+        _removingTile = removingTile;
 
         for (int i = 0; i < _form.rows.Length; i++)
         {
@@ -56,12 +66,12 @@ public abstract class Piece : MonoBehaviour
 
     public void SetPiece(Piece myPieceData)
     {
-        SetPiece(myPieceData._tile, myPieceData._form, myPieceData.PivotLocation, myPieceData.IsPivot);
+        SetPiece(myPieceData._tile, myPieceData._form, myPieceData.PivotLocation, myPieceData._removingTile ,myPieceData.IsPivot);
     }
 
     public void SetPiece(Piece myPieceData, bool isPivot)
     {
-        SetPiece(myPieceData._tile, myPieceData._form, myPieceData.PivotLocation, isPivot);
+        SetPiece(myPieceData._tile, myPieceData._form, myPieceData.PivotLocation, myPieceData._removingTile, isPivot);
     }
 
     public Vector3Int[] GetOriginCoordinates()
@@ -126,5 +136,16 @@ public abstract class Piece : MonoBehaviour
     public void SetAsCurrentPiece(bool isCurrent = true)
     {
         _isCurrentPiece = isCurrent;
+    }
+
+    public void MarkPiece()
+    {
+        _isMarked = true;
+    }
+
+    public void TurnOff()
+    {
+        _isInUse = false;
+        _isMarked = false;
     }
 }
