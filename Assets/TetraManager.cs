@@ -59,7 +59,10 @@ public class TetraManager : PiecesManager<TetraPiece>
 
         for (int i = 0; i < toPos.Length; i++)
         {
-            _piecesInBoard.Add(toPos[i], tempPieces[i]);
+            if (!_piecesInBoard.TryAdd(toPos[i], tempPieces[i]))
+            {
+                return false;
+            }
         }
 
         board.MoveTilesFromTo(fromPos, toPos);
@@ -514,9 +517,9 @@ public class TetraManager : PiecesManager<TetraPiece>
         SetStartPieceAndUpdate(board);
     }
 
-    public void NextPiece(Board board)
+    public bool NextPiece(Board board)
     {
-        SetStartPieceAndUpdate(board);
+        return SetStartPieceAndUpdate(board);
     }
 
     public void UpdateShadow(Board board)

@@ -237,7 +237,7 @@ public class TetraPlayer : Player
             _matchTimerCurrent = 0;
             return;
         }
-
+        
         if (_tetraManager.CheckLostCondition(_board))
         {
             _gameStarted = false;
@@ -245,7 +245,13 @@ public class TetraPlayer : Player
             return;
         }
 
-        _tetraManager.NextPiece(_board);
+        if (!_tetraManager.NextPiece(_board))
+        {
+            _gameStarted = false;
+            Debug.Log("Perdiste");
+            return;
+        }
+
         _tetraManager.UpdateShadow(_board);
     }
 }

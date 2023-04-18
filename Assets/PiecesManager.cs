@@ -205,12 +205,15 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
             temporalPosition[i].y = fromPos[i].y - fromPos[pivot].y + pivotPosition.y;
         }
 
-        MoveFromTo(board, fromPos, temporalPosition, false);
+        if (!MoveFromTo(board, fromPos, temporalPosition, false))
+        {
+            return null;
+        }
 
         return temporalPosition;
     }
 
-    protected void SetStartPieceAndUpdate(Board board)
+    protected bool SetStartPieceAndUpdate(Board board)
     {
         if (_previewPieces[0] == null)
         {
@@ -218,6 +221,10 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
         }
 
         Vector3Int[] temp =  MovePieceToPivotPosition(board, _previewPieces[0], board.StartPosition);
+        if (temp == null)
+        {
+            return false;
+        }
         UpdateCurrentPiece(temp);
 
 
@@ -229,6 +236,7 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
 
         //conseguir nueva pieza para la quinta preview
         UpdatePreviewPiece(GeneratePieceInBoard(board, board.PreviewPositions[board.PreviewPositions.Length - 1]), _previewPieces.Length - 1);
+        return true;
     }
 
     //una vez
