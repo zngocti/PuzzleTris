@@ -279,6 +279,8 @@ public class TetraManager : PiecesManager<TetraPiece>
             }
         }
 
+        RemoveInvalidRowsToCheck();
+
         //marcar las piezas
         for (int i = 0; i < _rowsToCheck.Length; i++)
         {
@@ -362,6 +364,46 @@ public class TetraManager : PiecesManager<TetraPiece>
         }
     }
 
+    public void RemoveInvalidRowsToCheck()
+    {
+        if (_rowsToCheck == null)
+        {
+            return;
+        }
+
+        int rowsToRemove = 0;
+
+        int[] tempRows = new int[_rowsToCheck.Length];
+
+        for (int i = 0; i < _rowsToCheck.Length; i++)
+        {
+            if (_rowsToCheck[i] < 0)
+            {
+                rowsToRemove++;
+            }
+
+            tempRows[i] = _rowsToCheck[i];
+        }
+
+        if (rowsToRemove == _rowsToCheck.Length)
+        {
+            _rowsToCheck = new int[1];
+            _rowsToCheck[0] = -1;
+            return;
+        }
+
+        _rowsToCheck = new int[_rowsToCheck.Length - rowsToRemove];
+        int counter = 0;
+        for (int i = 0; i < tempRows.Length; i++)
+        {
+            if (tempRows[i] >= 0)
+            {
+                _rowsToCheck[counter] = tempRows[i];
+                counter++;
+            }
+        }
+    }
+
     public override void DestroyMarkedPieces(Board board)
     {
         Vector3Int position = new Vector3Int();
@@ -403,20 +445,32 @@ public class TetraManager : PiecesManager<TetraPiece>
         int rowsToGoDown = 0;
         int counter = 0;
 
+        bool continueFor = false;
+
         for (int i = 0; i < board.Height ; i++)
         {
-            if (counter < _rowsToCheck.Length)
+            continueFor = false;
+
+            while (counter < _rowsToCheck.Length)
             {
                 if (_rowsToCheck[counter] < 0)
                 {
                     counter++;
+                    continue;
                 }
                 else if (_rowsToCheck[counter] == i)
                 {
                     rowsToGoDown++;
                     counter++;
-                    continue;
+                    continueFor = true;
                 }
+
+                break;
+            }
+
+            if (continueFor)
+            {
+                continue;
             }
 
             if (rowsToGoDown <= 0)
@@ -462,7 +516,6 @@ public class TetraManager : PiecesManager<TetraPiece>
 
     public void NextPiece(Board board)
     {
-        SetPieceNoCurrent(_currentPiece);
         SetStartPieceAndUpdate(board);
     }
 

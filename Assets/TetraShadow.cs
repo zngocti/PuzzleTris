@@ -23,6 +23,9 @@ public class TetraShadow : Shadow<TetraPiece>
             return;
         }
 
+        //remuevo la sombra anterior (si lo hago despues y las piezas tienen diferente length va a terminar creando un nuevo array
+        RemoveShadow(board);
+
         if (_shadowPosition == null)
         {
             _shadowPosition = new Vector3Int[piece.Length];
@@ -32,8 +35,6 @@ public class TetraShadow : Shadow<TetraPiece>
             _shadowPosition = new Vector3Int[piece.Length];
         }
 
-        //remuevo la sombra anterior
-        RemoveShadow(board);
 
         //coloco la posicion de la sombra y bajo hasta chocarme con algo que no sea la pieza actual
         bool stop = false;

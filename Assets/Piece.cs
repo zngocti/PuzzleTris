@@ -53,6 +53,7 @@ public abstract class Piece : MonoBehaviour
         _tile = newTile;
         _isPivot = isPivot;
         _removingTile = removingTile;
+        _currentPosition = 0;
 
         for (int i = 0; i < _form.rows.Length; i++)
         {
@@ -147,5 +148,6 @@ public abstract class Piece : MonoBehaviour
     {
         _isInUse = false;
         _isMarked = false;
+        _currentPosition = 0;
     }
 }

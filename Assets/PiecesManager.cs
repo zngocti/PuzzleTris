@@ -342,6 +342,7 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
     {
         T temporalOut;
 
+
         for (int i = 0; i < piece.Length; i++)
         {
             if (_piecesInBoard.TryGetValue(piece[i], out temporalOut))
@@ -349,6 +350,11 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
                 temporalOut.SetAsCurrentPiece(false);
             }
         }
+    }
+
+    public void StopUsingCurrentPiece()
+    {
+        SetPieceNoCurrent(_currentPiece);
     }
 
     protected bool UpdateHeldPiece(Vector3Int[] newHeldPiece)
@@ -392,6 +398,19 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
         }
 
         return true;
+    }
+
+    public bool CheckLostCondition(Board board)
+    {
+        for (int i = 0; i < _currentPiece.Length; i++)
+        {
+            if (_currentPiece[i].y >= board.Height)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected abstract bool CanMoveFromTo(Board board, Vector3Int[] fromPos, Vector3Int[] toPos, bool insideBoard);

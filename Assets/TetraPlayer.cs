@@ -23,6 +23,8 @@ public class TetraPlayer : Player
     float _matchTimer = 1.0f;
     float _matchTimerCurrent = -1;
 
+    bool _canHold = true;
+
     // Start is called before the first frame update
     protected override void Start()
     {
@@ -135,16 +137,7 @@ public class TetraPlayer : Player
             {
                 if (!temp)
                 {
-                    if (_tetraManager.CheckForMatch(_board))
-                    {
-                        //ganar puntos
-                        _matchTimerCurrent = 0;
-                    }
-                    else
-                    {
-                        _tetraManager.NextPiece(_board);
-                        _tetraManager.UpdateShadow(_board);
-                    }
+                    PieceLanded();
                 }
             }
         }
@@ -173,19 +166,11 @@ public class TetraPlayer : Player
 
             }
 
-            if (_tetraManager.CheckForMatch(_board))
-            {
-                //ganar puntos
-                _matchTimerCurrent = 0;
-            }
-            else
-            {
-                _tetraManager.NextPiece(_board);
-                _tetraManager.UpdateShadow(_board);
-            }
+            PieceLanded();
         }
-        else if (Input.GetKeyDown(KeyCode.LeftShift))
+        else if (Input.GetKeyDown(KeyCode.LeftShift) && _canHold)
         {
+            _canHold = false;
             _tetraManager.HoldPiece(_board);
             _tetraManager.UpdateShadow(_board);
         }
@@ -217,16 +202,7 @@ public class TetraPlayer : Player
             _timerSpeed = 0;
             if (!_tetraManager.MovePieceToDirection(_board, Direction.Down))
             {
-                if (_tetraManager.CheckForMatch(_board))
-                {
-                    //ganar puntos
-                    _matchTimerCurrent = 0;
-                }
-                else
-                {
-                    _tetraManager.NextPiece(_board);
-                    _tetraManager.UpdateShadow(_board);
-                }
+                PieceLanded();
             }
         }
     }
@@ -248,5 +224,28 @@ public class TetraPlayer : Player
             _tetraManager.NextPiece(_board);
             _tetraManager.UpdateShadow(_board);
         }
+    }
+
+    private void PieceLanded()
+    {
+        _tetraManager.StopUsingCurrentPiece();
+        _canHold = true;
+
+        if (_tetraManager.CheckForMatch(_board))
+        {
+            //ganar puntos
+            _matchTimerCurrent = 0;
+            return;
+        }
+
+        if (_tetraManager.CheckLostCondition(_board))
+        {
+            _gameStarted = false;
+            Debug.Log("Perdiste");
+            return;
+        }
+
+        _tetraManager.NextPiece(_board);
+        _tetraManager.UpdateShadow(_board);
     }
 }
