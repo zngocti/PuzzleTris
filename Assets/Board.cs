@@ -43,11 +43,12 @@ public class Board : MonoBehaviour
 
     private void Awake()
     {
+        /*
         Vector3 pos = new Vector3(_width / 2, _height / 2, 0);
         transform.position += pos;
         pos.z = -10;
         Camera.main.transform.position = pos;
-        
+        */
         //_height += _extraHeight;
         
         //columns rows

@@ -9,18 +9,27 @@ public class TetraPlayer : Player
 
     bool _gameStarted = false;
 
+    [SerializeField]
+    [Min(0.01f)]
     float _gameSpeed = 1.5f;
     float _timerSpeed = 0;
 
+    [SerializeField]
+    [Min(0.01f)]
     float _keySpeedMax = 0.20f;
     float _keySpeed = 0.20f;
+    [SerializeField]
+    [Min(0)]
     float _keySpedRemove = 0.08f;
+    [SerializeField]
+    [Min(0.01f)]
     float _keySpeedMin = 0.08f;
     float _keySpeedCurrent = 0;
 
     KeyCode _lastKey = KeyCode.None;
 
-    float _matchTimer = 1.0f;
+    [SerializeField]
+    float _matchTimer = 0.3f;
     float _matchTimerCurrent = -1;
 
     bool _canHold = true;
@@ -141,7 +150,8 @@ public class TetraPlayer : Player
                 }
             }
         }
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             _tetraManager.RotatePiece(_board, out temp, Direction.Left);
             if (temp)
