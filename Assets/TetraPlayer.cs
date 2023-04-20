@@ -43,14 +43,17 @@ public class TetraPlayer : Player
     // Update is called once per frame
     void Update()
     {
-        //bajar pieza segun velocidad del juego
-        ApplyFallToPiece();
+        if (_playerOn)
+        {
+            //bajar pieza segun velocidad del juego
+            ApplyFallToPiece();
 
-        //input
-        ProcessInput();
+            //input
+            ProcessInput();
 
-        //revisar si se esta efectuando un match
-        ProcessMatch();
+            //revisar si se esta efectuando un match
+            ProcessMatch();
+        }
     }
 
     private void Awake()
