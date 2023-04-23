@@ -56,6 +56,11 @@ public class TetraPlayer : Player
         }
     }
 
+    //https://www.youtube.com/watch?v=y7vWkuWTeys&t=1s
+    //https://www.youtube.com/watch?v=iFrO4bqmOPU
+    //https://forum.unity.com/threads/local-multiplayer-with-new-input-system-without-spawning-new-prefabs.1223733/
+    //https://forum.unity.com/threads/manual-local-multiplayer-using-inputdevices.1295664/
+
     //el input action que yo hice
     PlayerControls _controls;
 
