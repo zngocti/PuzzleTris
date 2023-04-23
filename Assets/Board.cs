@@ -69,12 +69,12 @@ public class Board : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.H))
         {
             _tilemap.SetTile((Vector3Int)miPos, miTile);
         }
 
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.J))
         {
             if (!_tilemap.HasTile((Vector3Int)miPos))
             {

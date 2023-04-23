@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class TetraPlayer : Player
 {
@@ -26,13 +27,14 @@ public class TetraPlayer : Player
     float _keySpeedMin = 0.08f;
     float _keySpeedCurrent = 0;
 
-    KeyCode _lastKey = KeyCode.None;
-
     [SerializeField]
     float _matchTimer = 0.3f;
     float _matchTimerCurrent = -1;
 
     bool _canHold = true;
+
+    Direction _currentDirection = Direction.None;
+    Direction _lastDirection = Direction.None;
 
     // Start is called before the first frame update
     protected override void Start()
@@ -48,65 +50,47 @@ public class TetraPlayer : Player
             //bajar pieza segun velocidad del juego
             ApplyFallToPiece();
 
-            //input
-            ProcessInput();
+            ProcessMovement();
 
             //revisar si se esta efectuando un match
             ProcessMatch();
         }
     }
 
+    PlayerControls _controls;
+
+    private void OnEnable()
+    {
+        _controls.Gameplay.Enable();
+    }
+
+    private void OnDisable()
+    {
+        _controls.Gameplay.Disable();
+    }
+
     private void Awake()
     {
+        _controls = new PlayerControls();
+
+        _controls.Gameplay.Right.started += context => StartDirection(Direction.Right);
+        _controls.Gameplay.Left.started += context => StartDirection(Direction.Left);
+        _controls.Gameplay.SoftDrop.started += context => StartDirection(Direction.Down);
+
+        _controls.Gameplay.Right.canceled += context => StopDirection(Direction.Right);
+        _controls.Gameplay.Left.canceled += context => StopDirection(Direction.Left);
+        _controls.Gameplay.SoftDrop.canceled += context => StopDirection(Direction.Down);
+
+        _controls.Gameplay.RotateClockwise.started += context => DoRotation(Direction.Right);
+        _controls.Gameplay.RotateCounterClockwise.started += context => DoRotation(Direction.Left);
+        
+        _controls.Gameplay.HardDrop.started += context => DoHardDrop();
+        _controls.Gameplay.Hold.started += context => HoldPiece();
+
         _piecesManager = _tetraManager;
     }
 
-    //el bool que devuelve el metodo es para saber si se cumplio el tiempo para tomar la key
-    //si el metodo devuelve true entocnes el bool que hace out pieceMoved es el del MovePieceToDirection
-    private bool MoveWithKeySpeed(KeyCode myKey, Direction myDirection, out bool pieceMoved)
-    {
-        if (_lastKey == myKey)
-        {
-            if (_keySpeedCurrent >= _keySpeed)
-            {
-                pieceMoved = _tetraManager.MovePieceToDirection(_board, myDirection);
-                /*
-                if (_tetraManager.MovePieceToDirection(_board, myDirection))
-                {
-                    _tetraManager.UpdateShadow(_board);
-                }*/
-                _keySpeedCurrent = 0;
-                if (_keySpeed > _keySpeedMin)
-                {
-                    _keySpeed -= _keySpedRemove;
-                }
-
-                return true;
-            }
-            else
-            {
-                _keySpeedCurrent += Time.deltaTime;
-                pieceMoved = false;
-                return false;
-            }
-        }
-        else
-        {
-            _keySpeedCurrent = 0;
-            _keySpeed = _keySpeedMax;
-            _lastKey = myKey;
-            pieceMoved = _tetraManager.MovePieceToDirection(_board, myDirection);
-            /*
-            if (_tetraManager.MovePieceToDirection(_board, myDirection))
-            {
-                _tetraManager.UpdateShadow(_board);
-            }*/
-
-            return true;
-        }
-    }
-
-    private void ProcessInput()
+    private void ProcessMovement()
     {
         if (Input.GetKey(KeyCode.I) && !_gameStarted)
         {
@@ -120,11 +104,16 @@ public class TetraPlayer : Player
             return;
         }
 
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            _tetraManager.DebugPiece();
+        }
+
         bool temp;
 
-        if (Input.GetKey(KeyCode.RightArrow))
+        if (_currentDirection == Direction.Right)
         {
-            if (MoveWithKeySpeed(KeyCode.RightArrow, Direction.Right, out temp))
+            if (MoveWithKeySpeed(Direction.Right, out temp))
             {
                 if (temp)
                 {
@@ -132,9 +121,9 @@ public class TetraPlayer : Player
                 }
             }
         }
-        else if (Input.GetKey(KeyCode.LeftArrow))
+        else if (_currentDirection == Direction.Left)
         {
-            if (MoveWithKeySpeed(KeyCode.LeftArrow, Direction.Left, out temp))
+            if (MoveWithKeySpeed(Direction.Left, out temp))
             {
                 if (temp)
                 {
@@ -142,10 +131,9 @@ public class TetraPlayer : Player
                 }
             }
         }
-        else if (Input.GetKey(KeyCode.DownArrow))
+        else if (_currentDirection == Direction.Down)
         {
-            //MoveWithKeySpeedDown();
-            if (MoveWithKeySpeed(KeyCode.DownArrow, Direction.Down, out temp))
+            if (MoveWithKeySpeed(Direction.Down, out temp))
             {
                 if (!temp)
                 {
@@ -153,50 +141,106 @@ public class TetraPlayer : Player
                 }
             }
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+    private void DoRotation(Direction direction)
+    {
+        bool temp;
+
+        _tetraManager.RotatePiece(_board, out temp, direction);
+
+        if (temp)
         {
-            _tetraManager.RotatePiece(_board, out temp, Direction.Left);
-            if (temp)
-            {
-                _tetraManager.UpdateShadow(_board);
-            }
+            _tetraManager.UpdateShadow(_board);
         }
-        else if (Input.GetKeyDown(KeyCode.C))
+    }
+
+    private void DoHardDrop()
+    {
+        while (_tetraManager.MovePieceToDirection(_board, Direction.Down))
         {
-            _tetraManager.RotatePiece(_board, out temp, Direction.Right);
-            if (temp)
-            {
-                _tetraManager.UpdateShadow(_board);
-            }
+
         }
-        else if (Input.GetKeyDown(KeyCode.Space))
-        {
-            //MoveWithKeySpeedSpace();
 
-            while (_tetraManager.MovePieceToDirection(_board, Direction.Down))
-            {
+        PieceLanded();
+    }
 
-            }
-
-            PieceLanded();
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftShift) && _canHold)
+    private void HoldPiece()
+    {
+        if (_canHold)
         {
             _canHold = false;
             _tetraManager.HoldPiece(_board);
             _tetraManager.UpdateShadow(_board);
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.R))
+    private void StartMovingToDirection(Direction myDirection)
+    {
+        if (_tetraManager.MovePieceToDirection(_board, myDirection))
         {
-            _tetraManager.DebugPiece();
+            if (myDirection != Direction.Down)
+            {
+                _tetraManager.UpdateShadow(_board);
+            }
+
+            return;
         }
 
-        if (Input.GetKeyUp(_lastKey))
+        if (myDirection == Direction.Down)
         {
-            _lastKey = KeyCode.None;
+            PieceLanded();
         }
+    }
+
+    //el bool que devuelve el metodo es para saber si se cumplio el tiempo para tomar la key
+    //si el metodo devuelve true entonces el bool que hace out pieceMoved es el del MovePieceToDirection
+    private bool MoveWithKeySpeed(Direction myDirection, out bool pieceMoved)
+    {
+        if (_keySpeedCurrent >= _keySpeed)
+        {
+            pieceMoved = _tetraManager.MovePieceToDirection(_board, myDirection);
+
+            _keySpeedCurrent = 0;
+            if (_keySpeed > _keySpeedMin)
+            {
+                _keySpeed -= _keySpedRemove;
+            }
+
+            return true;
+        }
+        else
+        {
+            _keySpeedCurrent += Time.deltaTime;
+            pieceMoved = false;
+            return false;
+        }
+    }
+
+    private void StartDirection(Direction direction)
+    {
+        if (direction == _currentDirection)
+        {
+            return;
+        }
+
+        StartMovingToDirection(direction);
+
+        _currentDirection = direction;
+        _keySpeedCurrent = 0;
+        _keySpeed = _keySpeedMax;
+    }
+
+    private void StopDirection(Direction direction)
+    {
+        if (direction != _currentDirection)
+        {
+            return;
+        }
+
+        _currentDirection = Direction.None;
+        _keySpeedCurrent = 0;
+        _keySpeed = _keySpeedMax;
     }
 
     private void ApplyFallToPiece()

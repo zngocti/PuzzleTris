@@ -6,7 +6,8 @@ public enum Direction
 {
     Right,
     Down,
-    Left
+    Left,
+    None
 }
 
 public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
