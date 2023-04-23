@@ -34,7 +34,6 @@ public class TetraPlayer : Player
     bool _canHold = true;
 
     Direction _currentDirection = Direction.None;
-    Direction _lastDirection = Direction.None;
 
     // Start is called before the first frame update
     protected override void Start()
@@ -57,6 +56,7 @@ public class TetraPlayer : Player
         }
     }
 
+    //el input action que yo hice
     PlayerControls _controls;
 
     private void OnEnable()
@@ -145,6 +145,11 @@ public class TetraPlayer : Player
 
     private void DoRotation(Direction direction)
     {
+        if (!_gameStarted || _matchTimerCurrent >= 0)
+        {
+            return;
+        }
+
         bool temp;
 
         _tetraManager.RotatePiece(_board, out temp, direction);
@@ -157,6 +162,11 @@ public class TetraPlayer : Player
 
     private void DoHardDrop()
     {
+        if (!_gameStarted || _matchTimerCurrent >= 0)
+        {
+            return;
+        }
+
         while (_tetraManager.MovePieceToDirection(_board, Direction.Down))
         {
 
@@ -167,6 +177,11 @@ public class TetraPlayer : Player
 
     private void HoldPiece()
     {
+        if (!_gameStarted || _matchTimerCurrent >= 0)
+        {
+            return;
+        }
+
         if (_canHold)
         {
             _canHold = false;
@@ -177,6 +192,11 @@ public class TetraPlayer : Player
 
     private void StartMovingToDirection(Direction myDirection)
     {
+        if (!_gameStarted || _matchTimerCurrent >= 0)
+        {
+            return;
+        }
+
         if (_tetraManager.MovePieceToDirection(_board, myDirection))
         {
             if (myDirection != Direction.Down)
@@ -219,6 +239,11 @@ public class TetraPlayer : Player
 
     private void StartDirection(Direction direction)
     {
+        if (!_gameStarted || _matchTimerCurrent >= 0)
+        {
+            return;
+        }
+
         if (direction == _currentDirection)
         {
             return;
@@ -233,6 +258,11 @@ public class TetraPlayer : Player
 
     private void StopDirection(Direction direction)
     {
+        if (!_gameStarted || _matchTimerCurrent >= 0)
+        {
+            return;
+        }
+
         if (direction != _currentDirection)
         {
             return;

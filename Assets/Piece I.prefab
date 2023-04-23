@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7508727673383838760
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7508727673383838762}
+  - component: {fileID: 7508727673383838763}
+  m_Layer: 0
+  m_Name: Piece I
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7508727673383838762
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7508727673383838760}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 8.2639675, y: -1.2702672, z: -10.1598425}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7508727673383838763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7508727673383838760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 555de1e41b1388c4096c49f9f8c4514d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tile: {fileID: 11400000, guid: 8155b94aa88294143a9da79a9d9edbc8, type: 2}
+  _form:
+    rows:
+    - row: 0000000000
+    - row: 0000000000
+    - row: 0001010101
+    - row: 0000000000
+    - row: 0000000000
+  _pivotLocation:
+    rows:
+    - row: 0000000000
+    - row: 0000000000
+    - row: 0000010000
+    - row: 0000000000
+    - row: 0000000000
+  _removingTile: {fileID: 11400000, guid: 0a36ba3c5b6b5f14dad0ba59d5db17ea, type: 2}
+  _positionsToTry:
+  - _clockwiseAttempts:
+    - {x: 0, y: 0, z: 0}
+    _counterclockwiseAttempts:
+    - {x: 0, y: 0, z: 0}
+  - _clockwiseAttempts:
+    - {x: 0, y: 0, z: 0}
+    _counterclockwiseAttempts:
+    - {x: 0, y: 0, z: 0}
+  - _clockwiseAttempts:
+    - {x: 0, y: 0, z: 0}
+    _counterclockwiseAttempts:
+    - {x: 0, y: 0, z: 0}
+  - _clockwiseAttempts:
+    - {x: 0, y: 0, z: 0}
+    _counterclockwiseAttempts:
+    - {x: 0, y: 0, z: 0}
