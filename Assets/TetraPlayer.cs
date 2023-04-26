@@ -56,28 +56,24 @@ public class TetraPlayer : Player
         }
     }
 
-    //https://www.youtube.com/watch?v=y7vWkuWTeys&t=1s
-    //https://www.youtube.com/watch?v=iFrO4bqmOPU
-    //https://forum.unity.com/threads/local-multiplayer-with-new-input-system-without-spawning-new-prefabs.1223733/
-    //https://forum.unity.com/threads/manual-local-multiplayer-using-inputdevices.1295664/
-
     //el input action que yo hice
-    PlayerControls _controls;
+    //PlayerControls _controls;
 
     private void OnEnable()
     {
-        _controls.Gameplay.Enable();
+        //_controls.Gameplay.Enable();
     }
 
     private void OnDisable()
     {
-        _controls.Gameplay.Disable();
+        //_controls.Gameplay.Disable();
     }
+
 
     private void Awake()
     {
-        _controls = new PlayerControls();
-
+        //_controls = new PlayerControls();
+        /*
         _controls.Gameplay.Right.started += context => StartDirection(Direction.Right);
         _controls.Gameplay.Left.started += context => StartDirection(Direction.Left);
         _controls.Gameplay.SoftDrop.started += context => StartDirection(Direction.Down);
@@ -91,8 +87,69 @@ public class TetraPlayer : Player
         
         _controls.Gameplay.HardDrop.started += context => DoHardDrop();
         _controls.Gameplay.Hold.started += context => HoldPiece();
-
+        */
         _piecesManager = _tetraManager;
+    }
+
+    public void OnMoveRight(InputAction.CallbackContext context)
+    {
+        switch (context.phase)
+        {
+            case InputActionPhase.Started:
+                StartDirection(Direction.Right);
+                break;
+            case InputActionPhase.Canceled:
+                StopDirection(Direction.Right);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void OnMoveLeft(InputAction.CallbackContext context)
+    {
+        switch (context.phase)
+        {
+            case InputActionPhase.Started:
+                StartDirection(Direction.Left);
+                break;
+            case InputActionPhase.Canceled:
+                StopDirection(Direction.Left);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void OnMoveDown(InputAction.CallbackContext context)
+    {
+        switch (context.phase)
+        {
+            case InputActionPhase.Started:
+                StartDirection(Direction.Down);
+                break;
+            case InputActionPhase.Canceled:
+                StopDirection(Direction.Down);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void OnRotateClock(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            DoRotation(Direction.Right);
+        }
+    }
+
+    public void OnRotateCounterClock(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            DoRotation(Direction.Left);
+        }
     }
 
     private void ProcessMovement()
@@ -165,9 +222,14 @@ public class TetraPlayer : Player
         }
     }
 
-    private void DoHardDrop()
+    public void DoHardDrop(InputAction.CallbackContext context)
     {
         if (!_gameStarted || _matchTimerCurrent >= 0)
+        {
+            return;
+        }
+
+        if (context.phase != InputActionPhase.Started)
         {
             return;
         }
@@ -180,9 +242,14 @@ public class TetraPlayer : Player
         PieceLanded();
     }
 
-    private void HoldPiece()
+    public void HoldPiece(InputAction.CallbackContext context)
     {
         if (!_gameStarted || _matchTimerCurrent >= 0)
+        {
+            return;
+        }
+
+        if (context.phase != InputActionPhase.Started)
         {
             return;
         }

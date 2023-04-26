@@ -67,7 +67,8 @@ public abstract class PiecesManager<T> : MonoBehaviour where T : Piece
 
         for (int i = 0; i < _poolSize; i++)
         {
-            GameObject go = new GameObject();
+            GameObject go = new GameObject("Piece");
+            go.transform.parent = this.transform;
             _myPool.Add(go.AddComponent<T>());
         }
     }

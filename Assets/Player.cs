@@ -13,7 +13,6 @@ public enum PieceType
     Uno
 }
 
-[RequireComponent(typeof(Board))]
 public abstract class Player : MonoBehaviour
 {
     [SerializeField]
