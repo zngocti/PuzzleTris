@@ -260,7 +260,7 @@ public class TetraManager : PiecesManager<TetraPiece>
     public override bool CheckForMatch(Board board)
     {
         UpdateRowsToCheck();
-        //ahora que _rowsToCheck tiene numeros diferentes y de menor a mayor compuestos por las y de la pieza actual puedo revisar el match
+        //ahora que _rowsToCheck tiene numeros diferentes y de menor a mayor compuestos por las Y de la pieza actual puedo revisar el match
 
         Vector3Int position = new Vector3Int();
 

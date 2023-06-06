@@ -56,38 +56,9 @@ public class TetraPlayer : Player
         }
     }
 
-    //el input action que yo hice
-    //PlayerControls _controls;
-
-    private void OnEnable()
-    {
-        //_controls.Gameplay.Enable();
-    }
-
-    private void OnDisable()
-    {
-        //_controls.Gameplay.Disable();
-    }
-
 
     private void Awake()
     {
-        //_controls = new PlayerControls();
-        /*
-        _controls.Gameplay.Right.started += context => StartDirection(Direction.Right);
-        _controls.Gameplay.Left.started += context => StartDirection(Direction.Left);
-        _controls.Gameplay.SoftDrop.started += context => StartDirection(Direction.Down);
-
-        _controls.Gameplay.Right.canceled += context => StopDirection(Direction.Right);
-        _controls.Gameplay.Left.canceled += context => StopDirection(Direction.Left);
-        _controls.Gameplay.SoftDrop.canceled += context => StopDirection(Direction.Down);
-
-        _controls.Gameplay.RotateClockwise.started += context => DoRotation(Direction.Right);
-        _controls.Gameplay.RotateCounterClockwise.started += context => DoRotation(Direction.Left);
-        
-        _controls.Gameplay.HardDrop.started += context => DoHardDrop();
-        _controls.Gameplay.Hold.started += context => HoldPiece();
-        */
         _piecesManager = _tetraManager;
     }
 
@@ -382,6 +353,9 @@ public class TetraPlayer : Player
             _tetraManager.MoveAllPiecesDown(_board);
             _tetraManager.NextPiece(_board);
             _tetraManager.UpdateShadow(_board);
+            //ui sonido y cosas para decir los puntos y eso
+            //ganar puntos aca o en piece landed??
+            //hacerlo todo con events/delegates/action/func ???
         }
     }
 
